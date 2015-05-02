@@ -1,5 +1,6 @@
 #include "Z80.h"
 #include "MemoryInterface.h"
+#include "OpCodes.h"
 #include <iostream>
 
 Z80::Z80(MemoryInterface *memoryInterface)

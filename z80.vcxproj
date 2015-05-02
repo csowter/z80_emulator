@@ -143,6 +143,7 @@
   <ItemGroup>
     <ClInclude Include="Memory.h" />
     <ClInclude Include="MemoryInterface.h" />
+    <ClInclude Include="OpCodes.h" />
     <ClInclude Include="Registers.h" />
     <ClInclude Include="Z80.h" />
   </ItemGroup>
