@@ -283,7 +283,7 @@ void Z80::INC_B(void){}
 void Z80::DEC_B(void){}             
 void Z80::LD_B_byte(void){}    
 void Z80::RLCA(void){}
-void Z80::EX_AF_AF(void){}
+void Z80::EX_AF_AF(void){uint16_t af = currentRegisters->af.af; currentRegisters->af.af = alternateRegisters.af.af; alternateRegisters.af.af = af;}
 void Z80::ADD_HL_BC(void){}
 void Z80::LD_A_iBC(void){}
 void Z80::DEC_BC(void){}
@@ -510,7 +510,7 @@ void Z80::RST_20(void){}
 void Z80::RET_PE(void){}
 void Z80::JP_iHL(void){}
 void Z80::JP_PE_word(void){}
-void Z80::EX_DE_HL(void){}
+void Z80::EX_DE_HL(void){uint16_t de = currentRegisters->de.de; currentRegisters->de.de = currentRegisters->hl.hl; currentRegisters->hl.hl = de;}
 void Z80::CALL_PE_word(void){}
 void Z80::ED(void){}
 void Z80::XOR_byte(void){}
