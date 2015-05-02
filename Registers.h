@@ -68,6 +68,7 @@ struct HL
 {
   union
   {
+    uint16_t hl;
     struct
     {
 #ifdef LITTLE_ENDIAN
