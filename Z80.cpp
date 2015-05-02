@@ -492,7 +492,7 @@ void Z80::PUSH_DE(void){}
 void Z80::SUB_A_byte(void){}
 void Z80::RST_10(void){}
 void Z80::RET_C(void){}
-void Z80::EXX(void){}
+void Z80::EXX(void){uint16_t swap = currentRegisters->bc.bc; currentRegisters->bc.bc = alternateRegisters.bc.bc; alternateRegisters.bc.bc = swap; swap = currentRegisters->de.de; currentRegisters->de.de = alternateRegisters.de.de; alternateRegisters.de.de = swap; swap = currentRegisters->hl.hl; currentRegisters->hl.hl = alternateRegisters.hl.hl; alternateRegisters.hl.hl = swap;}
 void Z80::JP_C_word(void){}
 void Z80::IN_A_iNN(void){}
 void Z80::CALL_C_word(void){}
