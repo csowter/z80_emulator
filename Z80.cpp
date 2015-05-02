@@ -4,7 +4,7 @@
 #include <iostream>
 
 Z80::Z80(MemoryInterface *memoryInterface)
-  : mainRegisters(), alternateRegisters(), indexRegisters(), otherRegisters(), PC(0), memory(memoryInterface), currentRegisters(&mainRegisters), Op(new fptr[OpCodes::NUMBER_OF_OPCODES])
+  : mainRegisters(), alternateRegisters(), indexRegisters(), otherRegisters(), PC(0), memory(memoryInterface), Op(new fptr[OpCodes::NUMBER_OF_OPCODES])
 {
   Op[OpCodes::NOP] = &Z80::NOP;               
   Op[OpCodes::LD_BC_word] = &Z80::LD_BC_word;        
@@ -283,7 +283,7 @@ void Z80::INC_B(void){}
 void Z80::DEC_B(void){}             
 void Z80::LD_B_byte(void){}    
 void Z80::RLCA(void){}
-void Z80::EX_AF_AF(void){uint16_t af = currentRegisters->af.af; currentRegisters->af.af = alternateRegisters.af.af; alternateRegisters.af.af = af;}
+void Z80::EX_AF_AF(void){uint16_t af = mainRegisters.af.af; mainRegisters.af.af = alternateRegisters.af.af; alternateRegisters.af.af = af;}
 void Z80::ADD_HL_BC(void){}
 void Z80::LD_A_iBC(void){}
 void Z80::DEC_BC(void){}
@@ -339,70 +339,70 @@ void Z80::INC_A(void){}
 void Z80::DEC_A(void){}
 void Z80::LD_A_byte(void){}
 void Z80::CCF(void){}
-void Z80::LD_B_B(void){currentRegisters->bc.b = currentRegisters->bc.b;}
-void Z80::LD_B_C(void){currentRegisters->bc.b = currentRegisters->bc.c;}
-void Z80::LD_B_D(void){currentRegisters->bc.b = currentRegisters->de.d;}
-void Z80::LD_B_E(void){currentRegisters->bc.b = currentRegisters->de.e;}
-void Z80::LD_B_H(void){currentRegisters->bc.b = currentRegisters->hl.h;}
-void Z80::LD_B_L(void){currentRegisters->bc.b = currentRegisters->hl.l;}
-void Z80::LD_B_iHL(void){currentRegisters->bc.b = memory->ReadByte(currentRegisters->hl.hl);}
-void Z80::LD_B_A(void){currentRegisters->bc.b = currentRegisters->af.a;}
-void Z80::LD_C_B(void){currentRegisters->bc.c = currentRegisters->bc.b;}
-void Z80::LD_C_C(void){currentRegisters->bc.c = currentRegisters->bc.c;}
-void Z80::LD_C_D(void){currentRegisters->bc.c = currentRegisters->de.d;}
-void Z80::LD_C_E(void){currentRegisters->bc.c = currentRegisters->de.e;}
-void Z80::LD_C_H(void){currentRegisters->bc.c = currentRegisters->hl.h;}
-void Z80::LD_C_L(void){currentRegisters->bc.c = currentRegisters->hl.l;}
-void Z80::LD_C_iHL(void){currentRegisters->bc.c = memory->ReadByte(currentRegisters->hl.hl);}
-void Z80::LD_C_A(void){currentRegisters->bc.c = currentRegisters->af.a;}
-void Z80::LD_D_B(void){currentRegisters->de.d = currentRegisters->bc.b;}
-void Z80::LD_D_C(void){currentRegisters->de.d = currentRegisters->bc.c;}
-void Z80::LD_D_D(void){currentRegisters->de.d = currentRegisters->de.d;}
-void Z80::LD_D_E(void){currentRegisters->de.d = currentRegisters->de.e;}
-void Z80::LD_D_H(void){currentRegisters->de.d = currentRegisters->hl.h;}
-void Z80::LD_D_L(void){currentRegisters->de.d = currentRegisters->hl.l;}
-void Z80::LD_D_iHL(void){currentRegisters->de.d = memory->ReadByte(currentRegisters->hl.hl);}
-void Z80::LD_D_A(void){currentRegisters->de.d = currentRegisters->af.a;}
-void Z80::LD_E_B(void){currentRegisters->de.e = currentRegisters->bc.b;}
-void Z80::LD_E_C(void){currentRegisters->de.e = currentRegisters->bc.c;}
-void Z80::LD_E_D(void){currentRegisters->de.e = currentRegisters->de.d;}
-void Z80::LD_E_E(void){currentRegisters->de.e = currentRegisters->de.e;}
-void Z80::LD_E_H(void){currentRegisters->de.e = currentRegisters->hl.h;}
-void Z80::LD_E_L(void){currentRegisters->de.e = currentRegisters->hl.l;}
-void Z80::LD_E_iHL(void){currentRegisters->de.e = memory->ReadByte(currentRegisters->hl.hl);}
-void Z80::LD_E_A(void){currentRegisters->de.e = currentRegisters->af.a;}
-void Z80::LD_H_B(void){currentRegisters->hl.h = currentRegisters->bc.b;}
-void Z80::LD_H_C(void){currentRegisters->hl.h = currentRegisters->bc.c;}
-void Z80::LD_H_D(void){currentRegisters->hl.h = currentRegisters->de.d;}
-void Z80::LD_H_E(void){currentRegisters->hl.h = currentRegisters->de.e;}
-void Z80::LD_H_H(void){currentRegisters->hl.h = currentRegisters->hl.h;}
-void Z80::LD_H_L(void){currentRegisters->hl.h = currentRegisters->hl.l;}
-void Z80::LD_H_iHL(void){currentRegisters->hl.h = memory->ReadByte(currentRegisters->hl.hl);}
-void Z80::LD_H_A(void){currentRegisters->hl.h = currentRegisters->af.a;}
-void Z80::LD_L_B(void){currentRegisters->hl.l = currentRegisters->bc.b;}
-void Z80::LD_L_C(void){currentRegisters->hl.l = currentRegisters->bc.c;}
-void Z80::LD_L_D(void){currentRegisters->hl.l = currentRegisters->de.d;}
-void Z80::LD_L_E(void){currentRegisters->hl.l = currentRegisters->de.e;}
-void Z80::LD_L_H(void){currentRegisters->hl.l = currentRegisters->hl.h;}
-void Z80::LD_L_L(void){currentRegisters->hl.l = currentRegisters->hl.l;}
-void Z80::LD_L_iHL(void){currentRegisters->hl.l = memory->ReadByte(currentRegisters->hl.hl);}
-void Z80::LD_L_A(void){currentRegisters->hl.l = currentRegisters->af.a;}
-void Z80::LD_iHL_B(void){memory->WriteByte(currentRegisters->hl.hl, currentRegisters->bc.b);}
-void Z80::LD_iHL_C(void){memory->WriteByte(currentRegisters->hl.hl, currentRegisters->bc.c);}
-void Z80::LD_iHL_D(void){memory->WriteByte(currentRegisters->hl.hl, currentRegisters->de.d);}
-void Z80::LD_iHL_E(void){memory->WriteByte(currentRegisters->hl.hl, currentRegisters->de.e);}
-void Z80::LD_iHL_H(void){memory->WriteByte(currentRegisters->hl.hl, currentRegisters->hl.h);}
-void Z80::LD_iHL_L(void){memory->WriteByte(currentRegisters->hl.hl, currentRegisters->hl.l);}
+void Z80::LD_B_B(void){mainRegisters.bc.b = mainRegisters.bc.b;}
+void Z80::LD_B_C(void){mainRegisters.bc.b = mainRegisters.bc.c;}
+void Z80::LD_B_D(void){mainRegisters.bc.b = mainRegisters.de.d;}
+void Z80::LD_B_E(void){mainRegisters.bc.b = mainRegisters.de.e;}
+void Z80::LD_B_H(void){mainRegisters.bc.b = mainRegisters.hl.h;}
+void Z80::LD_B_L(void){mainRegisters.bc.b = mainRegisters.hl.l;}
+void Z80::LD_B_iHL(void){mainRegisters.bc.b = memory->ReadByte(mainRegisters.hl.hl);}
+void Z80::LD_B_A(void){mainRegisters.bc.b = mainRegisters.af.a;}
+void Z80::LD_C_B(void){mainRegisters.bc.c = mainRegisters.bc.b;}
+void Z80::LD_C_C(void){mainRegisters.bc.c = mainRegisters.bc.c;}
+void Z80::LD_C_D(void){mainRegisters.bc.c = mainRegisters.de.d;}
+void Z80::LD_C_E(void){mainRegisters.bc.c = mainRegisters.de.e;}
+void Z80::LD_C_H(void){mainRegisters.bc.c = mainRegisters.hl.h;}
+void Z80::LD_C_L(void){mainRegisters.bc.c = mainRegisters.hl.l;}
+void Z80::LD_C_iHL(void){mainRegisters.bc.c = memory->ReadByte(mainRegisters.hl.hl);}
+void Z80::LD_C_A(void){mainRegisters.bc.c = mainRegisters.af.a;}
+void Z80::LD_D_B(void){mainRegisters.de.d = mainRegisters.bc.b;}
+void Z80::LD_D_C(void){mainRegisters.de.d = mainRegisters.bc.c;}
+void Z80::LD_D_D(void){mainRegisters.de.d = mainRegisters.de.d;}
+void Z80::LD_D_E(void){mainRegisters.de.d = mainRegisters.de.e;}
+void Z80::LD_D_H(void){mainRegisters.de.d = mainRegisters.hl.h;}
+void Z80::LD_D_L(void){mainRegisters.de.d = mainRegisters.hl.l;}
+void Z80::LD_D_iHL(void){mainRegisters.de.d = memory->ReadByte(mainRegisters.hl.hl);}
+void Z80::LD_D_A(void){mainRegisters.de.d = mainRegisters.af.a;}
+void Z80::LD_E_B(void){mainRegisters.de.e = mainRegisters.bc.b;}
+void Z80::LD_E_C(void){mainRegisters.de.e = mainRegisters.bc.c;}
+void Z80::LD_E_D(void){mainRegisters.de.e = mainRegisters.de.d;}
+void Z80::LD_E_E(void){mainRegisters.de.e = mainRegisters.de.e;}
+void Z80::LD_E_H(void){mainRegisters.de.e = mainRegisters.hl.h;}
+void Z80::LD_E_L(void){mainRegisters.de.e = mainRegisters.hl.l;}
+void Z80::LD_E_iHL(void){mainRegisters.de.e = memory->ReadByte(mainRegisters.hl.hl);}
+void Z80::LD_E_A(void){mainRegisters.de.e = mainRegisters.af.a;}
+void Z80::LD_H_B(void){mainRegisters.hl.h = mainRegisters.bc.b;}
+void Z80::LD_H_C(void){mainRegisters.hl.h = mainRegisters.bc.c;}
+void Z80::LD_H_D(void){mainRegisters.hl.h = mainRegisters.de.d;}
+void Z80::LD_H_E(void){mainRegisters.hl.h = mainRegisters.de.e;}
+void Z80::LD_H_H(void){mainRegisters.hl.h = mainRegisters.hl.h;}
+void Z80::LD_H_L(void){mainRegisters.hl.h = mainRegisters.hl.l;}
+void Z80::LD_H_iHL(void){mainRegisters.hl.h = memory->ReadByte(mainRegisters.hl.hl);}
+void Z80::LD_H_A(void){mainRegisters.hl.h = mainRegisters.af.a;}
+void Z80::LD_L_B(void){mainRegisters.hl.l = mainRegisters.bc.b;}
+void Z80::LD_L_C(void){mainRegisters.hl.l = mainRegisters.bc.c;}
+void Z80::LD_L_D(void){mainRegisters.hl.l = mainRegisters.de.d;}
+void Z80::LD_L_E(void){mainRegisters.hl.l = mainRegisters.de.e;}
+void Z80::LD_L_H(void){mainRegisters.hl.l = mainRegisters.hl.h;}
+void Z80::LD_L_L(void){mainRegisters.hl.l = mainRegisters.hl.l;}
+void Z80::LD_L_iHL(void){mainRegisters.hl.l = memory->ReadByte(mainRegisters.hl.hl);}
+void Z80::LD_L_A(void){mainRegisters.hl.l = mainRegisters.af.a;}
+void Z80::LD_iHL_B(void){memory->WriteByte(mainRegisters.hl.hl, mainRegisters.bc.b);}
+void Z80::LD_iHL_C(void){memory->WriteByte(mainRegisters.hl.hl, mainRegisters.bc.c);}
+void Z80::LD_iHL_D(void){memory->WriteByte(mainRegisters.hl.hl, mainRegisters.de.d);}
+void Z80::LD_iHL_E(void){memory->WriteByte(mainRegisters.hl.hl, mainRegisters.de.e);}
+void Z80::LD_iHL_H(void){memory->WriteByte(mainRegisters.hl.hl, mainRegisters.hl.h);}
+void Z80::LD_iHL_L(void){memory->WriteByte(mainRegisters.hl.hl, mainRegisters.hl.l);}
 void Z80::HALT(void){}
-void Z80::LD_iHL_A(void){memory->WriteByte(currentRegisters->hl.hl, currentRegisters->af.a);}
-void Z80::LD_A_B(void){currentRegisters->af.a = currentRegisters->bc.b;}
-void Z80::LD_A_C(void){currentRegisters->af.a = currentRegisters->bc.c;}
-void Z80::LD_A_D(void){currentRegisters->af.a = currentRegisters->de.d;}
-void Z80::LD_A_E(void){currentRegisters->af.a = currentRegisters->de.e;}
-void Z80::LD_A_H(void){currentRegisters->af.a = currentRegisters->hl.h;}
-void Z80::LD_A_L(void){currentRegisters->af.a = currentRegisters->hl.l;}
-void Z80::LD_A_iHL(void){currentRegisters->af.a = memory->ReadByte(currentRegisters->hl.hl);}
-void Z80::LD_A_A(void){currentRegisters->af.a = currentRegisters->af.a;}
+void Z80::LD_iHL_A(void){memory->WriteByte(mainRegisters.hl.hl, mainRegisters.af.a);}
+void Z80::LD_A_B(void){mainRegisters.af.a = mainRegisters.bc.b;}
+void Z80::LD_A_C(void){mainRegisters.af.a = mainRegisters.bc.c;}
+void Z80::LD_A_D(void){mainRegisters.af.a = mainRegisters.de.d;}
+void Z80::LD_A_E(void){mainRegisters.af.a = mainRegisters.de.e;}
+void Z80::LD_A_H(void){mainRegisters.af.a = mainRegisters.hl.h;}
+void Z80::LD_A_L(void){mainRegisters.af.a = mainRegisters.hl.l;}
+void Z80::LD_A_iHL(void){mainRegisters.af.a = memory->ReadByte(mainRegisters.hl.hl);}
+void Z80::LD_A_A(void){mainRegisters.af.a = mainRegisters.af.a;}
 void Z80::ADD_A_B(void){}
 void Z80::ADD_A_C(void){}
 void Z80::ADD_A_D(void){}
@@ -492,7 +492,7 @@ void Z80::PUSH_DE(void){}
 void Z80::SUB_A_byte(void){}
 void Z80::RST_10(void){}
 void Z80::RET_C(void){}
-void Z80::EXX(void){uint16_t swap = currentRegisters->bc.bc; currentRegisters->bc.bc = alternateRegisters.bc.bc; alternateRegisters.bc.bc = swap; swap = currentRegisters->de.de; currentRegisters->de.de = alternateRegisters.de.de; alternateRegisters.de.de = swap; swap = currentRegisters->hl.hl; currentRegisters->hl.hl = alternateRegisters.hl.hl; alternateRegisters.hl.hl = swap;}
+void Z80::EXX(void){uint16_t swap = mainRegisters.bc.bc; mainRegisters.bc.bc = alternateRegisters.bc.bc; alternateRegisters.bc.bc = swap; swap = mainRegisters.de.de; mainRegisters.de.de = alternateRegisters.de.de; alternateRegisters.de.de = swap; swap = mainRegisters.hl.hl; mainRegisters.hl.hl = alternateRegisters.hl.hl; alternateRegisters.hl.hl = swap;}
 void Z80::JP_C_word(void){}
 void Z80::IN_A_iNN(void){}
 void Z80::CALL_C_word(void){}
@@ -510,7 +510,7 @@ void Z80::RST_20(void){}
 void Z80::RET_PE(void){}
 void Z80::JP_iHL(void){}
 void Z80::JP_PE_word(void){}
-void Z80::EX_DE_HL(void){uint16_t de = currentRegisters->de.de; currentRegisters->de.de = currentRegisters->hl.hl; currentRegisters->hl.hl = de;}
+void Z80::EX_DE_HL(void){uint16_t de = mainRegisters.de.de; mainRegisters.de.de = mainRegisters.hl.hl; mainRegisters.hl.hl = de;}
 void Z80::CALL_PE_word(void){}
 void Z80::ED(void){}
 void Z80::XOR_byte(void){}

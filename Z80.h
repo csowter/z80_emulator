@@ -15,7 +15,6 @@ private:
   OtherRegisters otherRegisters;
   uint16_t PC;
   MemoryInterface *memory;
-  MainRegisters *currentRegisters;
   typedef void (Z80::*fptr)(void);
   fptr *Op;
 
