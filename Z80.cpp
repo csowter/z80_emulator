@@ -810,7 +810,16 @@ void Z80::JP_word(void)
 }
 
 void Z80::CALL_NZ_word(void){}
-void Z80::PUSH_BC(void){}
+
+void Z80::PUSH_BC(void)
+{
+#ifdef INSTRUCTION_TRACE
+	std::cout << "PUSH_BC" << std::endl;
+#endif
+	memory->WriteByte(--indexRegisters.sp, mainRegisters.bc.b);
+	memory->WriteByte(--indexRegisters.sp, mainRegisters.bc.c);
+}
+
 void Z80::ADD_A_byte(void){}
 void Z80::RST_00(void){}
 void Z80::RET_Z(void){}
@@ -868,7 +877,16 @@ void Z80::JP_NC_word(void)
 
 void Z80::OUT_iNN_A(void){}
 void Z80::CALL_NC_word(void){}
-void Z80::PUSH_DE(void){}
+
+void Z80::PUSH_DE(void)
+{
+#ifdef INSTRUCTION_TRACE
+	std::cout << "PUSH_DE" << std::endl;
+#endif
+	memory->WriteByte(--indexRegisters.sp, mainRegisters.de.d);
+	memory->WriteByte(--indexRegisters.sp, mainRegisters.de.e);
+}
+
 void Z80::SUB_A_byte(void){}
 void Z80::RST_10(void){}
 void Z80::RET_C(void){}
@@ -927,7 +945,16 @@ void Z80::JP_PO_word(void)
 
 void Z80::EX_iSP_HL(void){}
 void Z80::CALL_PO_word(void){}
-void Z80::PUSH_HL(void){}
+
+void Z80::PUSH_HL(void)
+{
+#ifdef INSTRUCTION_TRACE
+	std::cout << "PUSH_HL" << std::endl;
+#endif
+	memory->WriteByte(--indexRegisters.sp, mainRegisters.hl.h);
+	memory->WriteByte(--indexRegisters.sp, mainRegisters.hl.l);
+}
+
 void Z80::AND_byte(void){}
 void Z80::RST_20(void){}
 void Z80::RET_PE(void){}
@@ -992,7 +1019,16 @@ void Z80::JP_P_word(void)
 
 void Z80::DI(void){}
 void Z80::CALL_P_word(void){}
-void Z80::PUSH_AF(void){}
+
+void Z80::PUSH_AF(void)
+{
+#ifdef INSTRUCTION_TRACE
+	std::cout << "PUSH_AF" << std::endl;
+#endif
+	memory->WriteByte(--indexRegisters.sp, mainRegisters.af.a);
+	memory->WriteByte(--indexRegisters.sp, mainRegisters.af.f);
+}
+
 void Z80::OR_byte(void){}
 void Z80::RST_30(void){}
 void Z80::RET_M(void){}
