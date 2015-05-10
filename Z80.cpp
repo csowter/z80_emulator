@@ -300,7 +300,14 @@ void Z80::LD_iBC_A(void)
 	memory->WriteByte(mainRegisters.bc.bc, mainRegisters.af.a);
 }          
 
-void Z80::INC_BC(void){}            
+void Z80::INC_BC(void)
+{
+#ifdef INSTRUCTION_TRACE
+	std::cout << "INC_BC" << std::endl;
+#endif
+	++mainRegisters.bc.bc;
+}
+            
 void Z80::INC_B(void){}
 void Z80::DEC_B(void){}             
 
@@ -324,7 +331,14 @@ void Z80::LD_A_iBC(void)
 	mainRegisters.af.a = memory->ReadByte(mainRegisters.bc.bc);
 }
 
-void Z80::DEC_BC(void){}
+void Z80::DEC_BC(void)
+{
+#ifdef INSTRUCTION_TRACE
+	std::cout << "DEC_BC" << std::endl;
+#endif
+	--mainRegisters.bc.bc;
+}
+
 void Z80::INC_C(void){}
 void Z80::DEC_C(void){}
 
@@ -357,7 +371,14 @@ void Z80::LD_iDE_A(void)
 	memory->WriteByte(mainRegisters.de.de, mainRegisters.af.a);
 }
 
-void Z80::INC_DE(void){}
+void Z80::INC_DE(void)
+{
+#ifdef INSTRUCTION_TRACE
+	std::cout << "INC_DE" << std::endl;
+#endif
+	++mainRegisters.de.de;
+}
+
 void Z80::INC_D(void){}
 void Z80::DEC_D(void){}
 
@@ -381,7 +402,14 @@ void Z80::LD_A_iDE(void)
 	mainRegisters.af.a = memory->ReadByte(mainRegisters.de.de);
 }
 
-void Z80::DEC_DE(void){}
+void Z80::DEC_DE(void)
+{
+#ifdef INSTRUCTION_TRACE
+	std::cout << "DEC_DE" << std::endl;
+#endif
+	--mainRegisters.de.de;
+}
+
 void Z80::INC_E(void){}
 void Z80::DEC_E(void){}
 
@@ -417,7 +445,14 @@ void Z80::LD_iNN_HL(void)
 	memory->WriteByte(address, mainRegisters.hl.h);
 }
 
-void Z80::INC_HL(void){}
+void Z80::INC_HL(void)
+{
+#ifdef INSTRUCTION_TRACE
+	std::cout << "INC_HL" << std::endl;
+#endif
+	++mainRegisters.hl.hl;
+}
+
 void Z80::INC_H(void){}
 void Z80::DEC_H(void){}
 
@@ -442,7 +477,14 @@ void Z80::LD_HL_iNN(void)
 	mainRegisters.hl.h = memory->ReadByte(PC++);
 }
 
-void Z80::DEC_HL(void){}
+void Z80::DEC_HL(void)
+{
+#ifdef INSTRUCTION_TRACE
+	std::cout << "DEC_HL" << std::endl;
+#endif
+	--mainRegisters.hl.hl;
+}
+
 void Z80::INC_L(void){}
 void Z80::DEC_L(void){}
 
@@ -477,7 +519,14 @@ void Z80::LD_iNN_A(void)
 	memory->WriteByte(address, mainRegisters.af.a);
 }
 
-void Z80::INC_SP(void){}
+void Z80::INC_SP(void)
+{
+#ifdef INSTRUCTION_TRACE
+	std::cout << "INC_SP" << std::endl;
+#endif
+	++indexRegisters.sp;
+}
+
 void Z80::INC_iHL(void){}
 void Z80::DEC_iHL(void){}
 
@@ -503,7 +552,14 @@ void Z80::LD_A_iNN(void)
 	mainRegisters.af.a = memory->ReadByte(address);
 }
 
-void Z80::DEC_SP(void){}
+void Z80::DEC_SP(void)
+{
+#ifdef INSTRUCTION_TRACE
+	std::cout << "DEC_SP" << std::endl;
+#endif
+	--indexRegisters.sp;
+}
+
 void Z80::INC_A(void){}
 void Z80::DEC_A(void){}
 
