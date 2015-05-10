@@ -391,7 +391,16 @@ void Z80::LD_D_byte(void)
 }
 
 void Z80::RLA(void){}
-void Z80::JR(void){}
+
+void Z80::JR(void)
+{
+#ifdef INSTRUCTION_TRACE
+	std::cout << "JR" << std::endl;
+#endif
+	int8_t offset = memory->ReadByte(PC++);
+	PC += offset;
+}
+
 void Z80::ADD_HL_DE(void){}
 
 void Z80::LD_A_iDE(void)
@@ -422,7 +431,22 @@ void Z80::LD_E_byte(void)
 }
 
 void Z80::RRA(void){}
-void Z80::JR_NZ(void){}
+
+void Z80::JR_NZ(void)
+{
+#ifdef INSTRUCTION_TRACE
+	std::cout << "JR_NZ" << std::endl;
+#endif
+	if(mainRegisters.af.f & ZERO_BIT)
+	{
+		++PC;
+	}
+	else
+	{
+		int8_t offset = memory->ReadByte(PC++);
+		PC += offset;
+	}
+}
 
 void Z80::LD_HL_word(void)
 {
@@ -465,7 +489,23 @@ void Z80::LD_H_byte(void)
 }
 
 void Z80::DAA(void){}
-void Z80::JR_Z(void){}
+
+void Z80::JR_Z(void)
+{
+#ifdef INSTRUCTION_TRACE
+	std::cout << "JR_Z" << std::endl;
+#endif
+	if(mainRegisters.af.f & ZERO_BIT)
+	{
+		int8_t offset = memory->ReadByte(PC++);
+		PC += offset;
+	}
+	else
+	{
+		++PC;
+	}
+}
+
 void Z80::ADD_HL_HL(void){}
 
 void Z80::LD_HL_iNN(void)
@@ -497,7 +537,22 @@ void Z80::LD_L_byte(void)
 }
 
 void Z80::CPL(void){}
-void Z80::JR_NC(void){}
+
+void Z80::JR_NC(void)
+{
+#ifdef INSTRUCTION_TRACE
+	std::cout << "JR_NC" << std::endl;
+#endif
+	if(mainRegisters.af.f & CARRY_BIT)
+	{
+		++PC;
+	}
+	else
+	{
+		int8_t offset = memory->ReadByte(PC++);
+		PC += offset;
+	}
+}
 
 void Z80::LD_SP_word(void)
 {
@@ -539,7 +594,23 @@ void Z80::LD_iHL_byte(void)
 }
 
 void Z80::SCF(void){}
-void Z80::JR_C(void){}
+
+void Z80::JR_C(void)
+{
+#ifdef INSTRUCTION_TRACE
+	std::cout << "JR_C" << std::endl;
+#endif
+	if(mainRegisters.af.f & CARRY_BIT)
+	{
+		int8_t offset = memory->ReadByte(PC++);
+		PC += offset;
+	}
+	else
+	{
+		++PC;
+	}
+}
+
 void Z80::ADD_HL_SP(void){}
 
 void Z80::LD_A_iNN(void)
@@ -836,7 +907,14 @@ void Z80::PUSH_HL(void){}
 void Z80::AND_byte(void){}
 void Z80::RST_20(void){}
 void Z80::RET_PE(void){}
-void Z80::JP_iHL(void){}
+
+void Z80::JP_iHL(void)
+{
+#ifdef INSTRUCTION_TRACE
+	std::cout << "JP_iHL" << std::endl;
+#endif
+	PC = mainRegisters.hl.hl;
+}
 
 void Z80::JP_PE_word(void)
 {
