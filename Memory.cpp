@@ -6,6 +6,8 @@ Memory::Memory(uint16_t size)
   : memory(new uint8_t[size]), size(size)
 {
   memset(memory, 0x00, size);
+  for(int i = 0; i < size; i++)
+	memory[i] = i & 0xFF;
 }
 
 Memory::~Memory(void)

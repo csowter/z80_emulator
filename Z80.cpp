@@ -275,13 +275,35 @@ void Z80::Execute(void)
   (this->*Op[instruction])();
 }
 
-void Z80::NOP(void){}               
-void Z80::LD_BC_word(void){}        
+void Z80::NOP(void)
+{
+#ifdef INSTRUCTION_TRACE
+	std::cout << "NOP" << std::endl;
+#endif
+}               
+
+void Z80::LD_BC_word(void)
+{
+#ifdef INSTRUCTION_TRACE
+	std::cout << "LD_BC_word" << std::endl;
+#endif
+	mainRegisters.bc.c = memory->ReadByte(PC++);
+	mainRegisters.bc.b = memory->ReadByte(PC++);
+}
+        
 void Z80::LD_iBC_A(void){}          
 void Z80::INC_BC(void){}            
 void Z80::INC_B(void){}
 void Z80::DEC_B(void){}             
-void Z80::LD_B_byte(void){}    
+
+void Z80::LD_B_byte(void)
+{
+#ifdef INSTRUCTION_TRACE
+	std::cout << "LD_B_byte" << std::endl;
+#endif
+	mainRegisters.bc.b = memory->ReadByte(PC++);
+}    
+
 void Z80::RLCA(void){}
 void Z80::EX_AF_AF(void){uint16_t af = mainRegisters.af.af; mainRegisters.af.af = alternateRegisters.af.af; alternateRegisters.af.af = af;}
 void Z80::ADD_HL_BC(void){}
@@ -289,15 +311,40 @@ void Z80::LD_A_iBC(void){}
 void Z80::DEC_BC(void){}
 void Z80::INC_C(void){}
 void Z80::DEC_C(void){}
-void Z80::LD_C_byte(void){}
+
+void Z80::LD_C_byte(void)
+{
+#ifdef INSTRUCTION_TRACE
+	std::cout << "LD_C_byte" << std::endl;
+#endif
+	mainRegisters.bc.c = memory->ReadByte(PC++);
+}
+
 void Z80::RRCA(void){}
 void Z80::DJNZ(void){}
-void Z80::LD_DE_word(void){}
+
+void Z80::LD_DE_word(void)
+{
+#ifdef INSTRUCTION_TRACE
+	std::cout << "LD_DE_word" << std::endl;
+#endif
+	mainRegisters.de.e = memory->ReadByte(PC++);
+	mainRegisters.de.d = memory->ReadByte(PC++);
+}
+
 void Z80::LD_iDE_A(void){}
 void Z80::INC_DE(void){}
 void Z80::INC_D(void){}
 void Z80::DEC_D(void){}
-void Z80::LD_D_byte(void){}
+
+void Z80::LD_D_byte(void)
+{
+#ifdef INSTRUCTION_TRACE
+	std::cout << "LD_D_byte" << std::endl;
+#endif
+	mainRegisters.de.d = memory->ReadByte(PC++);
+}
+
 void Z80::RLA(void){}
 void Z80::JR(void){}
 void Z80::ADD_HL_DE(void){}
@@ -305,15 +352,40 @@ void Z80::LD_A_iDE(void){}
 void Z80::DEC_DE(void){}
 void Z80::INC_E(void){}
 void Z80::DEC_E(void){}
-void Z80::LD_E_byte(void){}
+
+void Z80::LD_E_byte(void)
+{
+#ifdef INSTRUCTION_TRACE
+	std::cout << "LD_E_byte" << std::endl;
+#endif
+	mainRegisters.de.e = memory->ReadByte(PC++);
+}
+
 void Z80::RRA(void){}
 void Z80::JR_NZ(void){}
-void Z80::LD_HL_word(void){}
+
+void Z80::LD_HL_word(void)
+{
+#ifdef INSTRUCTION_TRACE
+	std::cout << "LD_HL_word" << std::endl;
+#endif
+	mainRegisters.hl.l = memory->ReadByte(PC++);
+	mainRegisters.hl.h = memory->ReadByte(PC++);
+}
+
 void Z80::LD_iNN_HL(void){}
 void Z80::INC_HL(void){}
 void Z80::INC_H(void){}
 void Z80::DEC_H(void){}
-void Z80::LD_H_byte(void){}
+
+void Z80::LD_H_byte(void)
+{
+#ifdef INSTRUCTION_TRACE
+	std::cout << "LD_H_byte" << std::endl;
+#endif
+	mainRegisters.hl.h = memory->ReadByte(PC++);
+}
+
 void Z80::DAA(void){}
 void Z80::JR_Z(void){}
 void Z80::ADD_HL_HL(void){}
@@ -321,10 +393,28 @@ void Z80::LD_HL_iNN(void){}
 void Z80::DEC_HL(void){}
 void Z80::INC_L(void){}
 void Z80::DEC_L(void){}
-void Z80::LD_L_byte(void){}
+
+void Z80::LD_L_byte(void)
+{
+#ifdef INSTRUCTION_TRACE
+	std::cout << "LD_L_byte" << std::endl;
+#endif
+	mainRegisters.hl.l = memory->ReadByte(PC++);
+}
+
 void Z80::CPL(void){}
 void Z80::JR_NC(void){}
-void Z80::LD_SP_word(void){}
+
+void Z80::LD_SP_word(void)
+{
+#ifdef INSTRUCTION_TRACE
+	std::cout << "LD_SP_word" << std::endl;
+#endif
+
+	indexRegisters.sp = memory->ReadByte(PC++);
+	indexRegisters.sp |= (memory->ReadByte(PC++) << 8);
+}
+
 void Z80::LD_iNN_A(void){}
 void Z80::INC_SP(void){}
 void Z80::INC_iHL(void){}
@@ -337,7 +427,15 @@ void Z80::LD_A_iNN(void){}
 void Z80::DEC_SP(void){}
 void Z80::INC_A(void){}
 void Z80::DEC_A(void){}
-void Z80::LD_A_byte(void){}
+
+void Z80::LD_A_byte(void)
+{
+#ifdef INSTRUCTION_TRACE
+	std::cout << "LD_A_byte" << std::endl;
+#endif
+	mainRegisters.af.a = memory->ReadByte(PC++);
+}
+
 void Z80::CCF(void){}
 void Z80::LD_B_B(void){mainRegisters.bc.b = mainRegisters.bc.b;}
 void Z80::LD_B_C(void){mainRegisters.bc.b = mainRegisters.bc.c;}
