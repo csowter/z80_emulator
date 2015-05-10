@@ -2,3 +2,4 @@ Debug/
 ipch/
 x64/
 obj/
+*.sdf
