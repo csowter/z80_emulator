@@ -943,7 +943,20 @@ void Z80::JP_PO_word(void)
 	}
 }
 
-void Z80::EX_iSP_HL(void){}
+void Z80::EX_iSP_HL(void)
+{
+#ifdef INSTRUCTION_TRACE
+	std::cout << "EX_iSP_HL" << std::endl;
+#endif
+	uint8_t temp = memory->ReadByte(indexRegisters.sp);
+	memory->WriteByte(indexRegisters.sp, mainRegisters.hl.l);
+	mainRegisters.hl.l = temp;
+
+	temp = memory->ReadByte(indexRegisters.sp + 1);
+	memory->WriteByte(indexRegisters.sp + 1, mainRegisters.hl.h);
+	mainRegisters.hl.h = temp;
+}
+
 void Z80::CALL_PO_word(void){}
 
 void Z80::PUSH_HL(void)
@@ -1032,7 +1045,14 @@ void Z80::PUSH_AF(void)
 void Z80::OR_byte(void){}
 void Z80::RST_30(void){}
 void Z80::RET_M(void){}
-void Z80::LD_SP_HL(void){}
+
+void Z80::LD_SP_HL(void)
+{
+#ifdef INSTRUCTION_TRACE
+	std::cout << "LD_SP_HL" << std::endl;
+#endif
+	indexRegisters.sp = mainRegisters.hl.hl;
+}
 
 void Z80::JP_M_word(void)
 {
