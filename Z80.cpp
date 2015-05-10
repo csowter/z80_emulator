@@ -772,7 +772,15 @@ void Z80::CP_L(void){}
 void Z80::CP_iHL(void){}
 void Z80::CP_A(void){}
 void Z80::RET_NZ(void){}
-void Z80::POP_BC(void){}
+
+void Z80::POP_BC(void)
+{
+#ifdef INSTRUCTION_TRACE
+	std::cout << "POP_BC" << std::endl;
+#endif
+	mainRegisters.bc.c = memory->ReadByte(indexRegisters.sp++);
+	mainRegisters.bc.b = memory->ReadByte(indexRegisters.sp++);
+}
 
 void Z80::JP_NZ_word(void)
 {
@@ -831,7 +839,15 @@ void Z80::CALL_word(void){}
 void Z80::ADC_A_byte(void){}
 void Z80::RST_08(void){}
 void Z80::RET_NC(void){}
-void Z80::POP_DE(void){}
+
+void Z80::POP_DE(void)
+{
+#ifdef INSTRUCTION_TRACE
+	std::cout << "POP_DE" << std::endl;
+#endif
+	mainRegisters.de.e = memory->ReadByte(indexRegisters.sp++);
+	mainRegisters.de.d = memory->ReadByte(indexRegisters.sp++);
+}
 
 void Z80::JP_NC_word(void)
 {
@@ -882,7 +898,15 @@ void Z80::DD(void){}
 void Z80::SBC_A_byte(void){}
 void Z80::RST_18(void){}
 void Z80::RET_PO(void){}
-void Z80::POP_HL(void){}
+
+void Z80::POP_HL(void)
+{
+#ifdef INSTRUCTION_TRACE
+	std::cout << "POP_HL" << std::endl;
+#endif
+	mainRegisters.hl.l = memory->ReadByte(indexRegisters.sp++);
+	mainRegisters.hl.h = memory->ReadByte(indexRegisters.sp++);
+}
 
 void Z80::JP_PO_word(void)
 {
@@ -939,7 +963,15 @@ void Z80::ED(void){}
 void Z80::XOR_byte(void){}
 void Z80::RST_28(void){}
 void Z80::RET_P(void){}
-void Z80::POP_AF(void){}
+
+void Z80::POP_AF(void)
+{
+#ifdef INSTRUCTION_TRACE
+	std::cout <<"POP_AF" << std::endl;
+#endif
+	mainRegisters.af.f = memory->ReadByte(indexRegisters.sp++);
+	mainRegisters.af.a = memory->ReadByte(indexRegisters.sp++);
+}
 
 void Z80::JP_P_word(void)
 {
