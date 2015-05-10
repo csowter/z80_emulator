@@ -315,7 +315,15 @@ void Z80::LD_B_byte(void)
 void Z80::RLCA(void){}
 void Z80::EX_AF_AF(void){uint16_t af = mainRegisters.af.af; mainRegisters.af.af = alternateRegisters.af.af; alternateRegisters.af.af = af;}
 void Z80::ADD_HL_BC(void){}
-void Z80::LD_A_iBC(void){}
+
+void Z80::LD_A_iBC(void)
+{
+#ifdef INSTRUCTION_TRACE
+	std::cout << "LD_A_iBC" << std::endl;
+#endif
+	mainRegisters.af.a = memory->ReadByte(mainRegisters.bc.bc);
+}
+
 void Z80::DEC_BC(void){}
 void Z80::INC_C(void){}
 void Z80::DEC_C(void){}
@@ -364,7 +372,15 @@ void Z80::LD_D_byte(void)
 void Z80::RLA(void){}
 void Z80::JR(void){}
 void Z80::ADD_HL_DE(void){}
-void Z80::LD_A_iDE(void){}
+
+void Z80::LD_A_iDE(void)
+{
+#ifdef INSTRUCTION_TRACE
+	std::cout << "LD_A_iDE" << std::endl;
+#endif
+	mainRegisters.af.a = memory->ReadByte(mainRegisters.de.de);
+}
+
 void Z80::DEC_DE(void){}
 void Z80::INC_E(void){}
 void Z80::DEC_E(void){}
@@ -389,7 +405,18 @@ void Z80::LD_HL_word(void)
 	mainRegisters.hl.h = memory->ReadByte(PC++);
 }
 
-void Z80::LD_iNN_HL(void){}
+void Z80::LD_iNN_HL(void)
+{
+#ifdef INSTRUCTION_TRACE
+	std::cout << "LD_iNN)HL" << std::endl;
+#endif
+	uint16_t address = memory->ReadByte(PC++);
+	address |= (memory->ReadByte(PC++) << 8);
+	memory->WriteByte(address, mainRegisters.hl.l);
+	++address;
+	memory->WriteByte(address, mainRegisters.hl.h);
+}
+
 void Z80::INC_HL(void){}
 void Z80::INC_H(void){}
 void Z80::DEC_H(void){}
@@ -405,7 +432,16 @@ void Z80::LD_H_byte(void)
 void Z80::DAA(void){}
 void Z80::JR_Z(void){}
 void Z80::ADD_HL_HL(void){}
-void Z80::LD_HL_iNN(void){}
+
+void Z80::LD_HL_iNN(void)
+{
+#ifdef INSTRUCTION_TRACE
+	std::cout << "LD_HL_iNN" << std::endl;
+#endif
+	mainRegisters.hl.l = memory->ReadByte(PC++);
+	mainRegisters.hl.h = memory->ReadByte(PC++);
+}
+
 void Z80::DEC_HL(void){}
 void Z80::INC_L(void){}
 void Z80::DEC_L(void){}
@@ -431,15 +467,42 @@ void Z80::LD_SP_word(void)
 	indexRegisters.sp |= (memory->ReadByte(PC++) << 8);
 }
 
-void Z80::LD_iNN_A(void){}
+void Z80::LD_iNN_A(void)
+{
+#ifdef INSTRUCTION_TRACE
+	std::cout << "LD_iNN_A" << std::endl;
+#endif
+	uint16_t address = memory->ReadByte(PC++);
+	address |= (memory->ReadByte(PC++) << 8);
+	memory->WriteByte(address, mainRegisters.af.a);
+}
+
 void Z80::INC_SP(void){}
 void Z80::INC_iHL(void){}
 void Z80::DEC_iHL(void){}
-void Z80::LD_iHL_byte(void){}
+
+void Z80::LD_iHL_byte(void)
+{
+#ifdef INSTRUCTION_TRACE
+	std::cout << "LD_iHL_byte" << std::endl;
+#endif
+	memory->WriteByte(mainRegisters.hl.hl, memory->ReadByte(PC++));
+}
+
 void Z80::SCF(void){}
 void Z80::JR_C(void){}
 void Z80::ADD_HL_SP(void){}
-void Z80::LD_A_iNN(void){}
+
+void Z80::LD_A_iNN(void)
+{
+#ifdef INSTRUCTION_TRACE
+	std::cout << "LD_A_iNN" << std::endl;
+#endif
+	uint16_t address = memory->ReadByte(PC++);
+	address |= (memory->ReadByte(PC++) << 8);
+	mainRegisters.af.a = memory->ReadByte(address);
+}
+
 void Z80::DEC_SP(void){}
 void Z80::INC_A(void){}
 void Z80::DEC_A(void){}
