@@ -702,15 +702,58 @@ void Z80::CP_iHL(void){}
 void Z80::CP_A(void){}
 void Z80::RET_NZ(void){}
 void Z80::POP_BC(void){}
-void Z80::JP_NZ_word(void){}
-void Z80::JP_word(void){}
+
+void Z80::JP_NZ_word(void)
+{
+#ifdef INSTRUCTION_TRACE
+	std::cout << "JP_NZ_word" << std::endl;
+#endif
+	if(mainRegisters.af.f & ZERO_BIT)
+	{
+		PC += 2;
+	}
+	else
+	{
+		uint16_t address = memory->ReadByte(PC++);
+		address |= (memory->ReadByte(PC++) << 8);
+		PC = address;
+	}
+}
+
+void Z80::JP_word(void)
+{
+#ifdef INSTRUCTION_TRACE
+	std::cout << "JP_word" << std::endl;
+#endif
+	uint16_t address = memory->ReadByte(PC++);
+	address |= (memory->ReadByte(PC++) << 8);
+	PC = address;
+}
+
 void Z80::CALL_NZ_word(void){}
 void Z80::PUSH_BC(void){}
 void Z80::ADD_A_byte(void){}
 void Z80::RST_00(void){}
 void Z80::RET_Z(void){}
 void Z80::RET(void){}
-void Z80::JP_Z_word(void){}
+
+void Z80::JP_Z_word(void)
+{
+#ifdef INSTRUCTION_TRACE
+	std::cout << "JP_Z_word" << std::endl;
+#endif
+	if(mainRegisters.af.f & ZERO_BIT)
+	{
+		uint16_t address = memory->ReadByte(PC++);
+		address |= (memory->ReadByte(PC++) << 8);
+		PC = address;
+	}
+	else
+	{
+		PC += 2;
+	}
+}
+
 void Z80::CB(void){}
 void Z80::CALL_Z_word(void){}
 void Z80::CALL_word(void){}
@@ -718,7 +761,24 @@ void Z80::ADC_A_byte(void){}
 void Z80::RST_08(void){}
 void Z80::RET_NC(void){}
 void Z80::POP_DE(void){}
-void Z80::JP_NC_word(void){}
+
+void Z80::JP_NC_word(void)
+{
+#ifdef INSTRUCTION_TRACE
+	std::cout << "JP_NC_word" << std::endl;
+#endif
+	if(mainRegisters.af.f & CARRY_BIT)
+	{
+		PC += 2;
+	}
+	else
+	{
+		uint16_t address = memory->ReadByte(PC++);
+		address |= (memory->ReadByte(PC++) << 8);
+		PC = address;
+	}
+}
+
 void Z80::OUT_iNN_A(void){}
 void Z80::CALL_NC_word(void){}
 void Z80::PUSH_DE(void){}
@@ -726,7 +786,25 @@ void Z80::SUB_A_byte(void){}
 void Z80::RST_10(void){}
 void Z80::RET_C(void){}
 void Z80::EXX(void){uint16_t swap = mainRegisters.bc.bc; mainRegisters.bc.bc = alternateRegisters.bc.bc; alternateRegisters.bc.bc = swap; swap = mainRegisters.de.de; mainRegisters.de.de = alternateRegisters.de.de; alternateRegisters.de.de = swap; swap = mainRegisters.hl.hl; mainRegisters.hl.hl = alternateRegisters.hl.hl; alternateRegisters.hl.hl = swap;}
-void Z80::JP_C_word(void){}
+
+void Z80::JP_C_word(void)
+{
+#ifdef  INSTRUCTION_TRACE
+	std::cout << "JP_C_word" << std::endl;
+#endif
+
+	if(mainRegisters.af.f & CARRY_BIT)
+	{
+		uint16_t address = memory->ReadByte(PC++);
+		address |= (memory->ReadByte(PC++) << 8);
+		PC = address;
+	}
+	else
+	{
+		PC += 2;
+	}
+}
+
 void Z80::IN_A_iNN(void){}
 void Z80::CALL_C_word(void){}
 void Z80::DD(void){}
@@ -734,7 +812,24 @@ void Z80::SBC_A_byte(void){}
 void Z80::RST_18(void){}
 void Z80::RET_PO(void){}
 void Z80::POP_HL(void){}
-void Z80::JP_PO_word(void){}
+
+void Z80::JP_PO_word(void)
+{
+#ifdef INSTRUCTION_TRACE
+	std::cout << "JP_PO_word" << std::endl;
+#endif
+	if(mainRegisters.af.f & PARITY_OVERFLOW_BIT)
+	{
+		PC += 2;
+	}
+	else
+	{
+		uint16_t address = memory->ReadByte(PC++);
+		address |= (memory->ReadByte(PC++) << 8);
+		PC = address;
+	}
+}
+
 void Z80::EX_iSP_HL(void){}
 void Z80::CALL_PO_word(void){}
 void Z80::PUSH_HL(void){}
@@ -742,7 +837,24 @@ void Z80::AND_byte(void){}
 void Z80::RST_20(void){}
 void Z80::RET_PE(void){}
 void Z80::JP_iHL(void){}
-void Z80::JP_PE_word(void){}
+
+void Z80::JP_PE_word(void)
+{
+#ifdef INSTRUCTION_TRACE
+	std::cout << "JP_PE_word" << std::endl;
+#endif
+	if(mainRegisters.af.f & PARITY_OVERFLOW_BIT)
+	{
+		uint16_t address = memory->ReadByte(PC++);
+		address |= (memory->ReadByte(PC++) << 8);
+		PC = address;
+	}
+	else
+	{
+		PC += 2;
+	}
+}
+
 void Z80::EX_DE_HL(void){uint16_t de = mainRegisters.de.de; mainRegisters.de.de = mainRegisters.hl.hl; mainRegisters.hl.hl = de;}
 void Z80::CALL_PE_word(void){}
 void Z80::ED(void){}
@@ -750,7 +862,24 @@ void Z80::XOR_byte(void){}
 void Z80::RST_28(void){}
 void Z80::RET_P(void){}
 void Z80::POP_AF(void){}
-void Z80::JP_P_word(void){}
+
+void Z80::JP_P_word(void)
+{
+#ifdef INSTRUCTION_TRACE
+	std::cout << "JP_P_word" << std::endl;
+#endif
+	if(mainRegisters.af.f & SIGN_BIT)
+	{
+		PC += 2;
+	}
+	else
+	{
+		uint16_t address = memory->ReadByte(PC++);
+		address |= (memory->ReadByte(PC) << 8);
+		PC = address;
+	}
+}
+
 void Z80::DI(void){}
 void Z80::CALL_P_word(void){}
 void Z80::PUSH_AF(void){}
@@ -758,7 +887,24 @@ void Z80::OR_byte(void){}
 void Z80::RST_30(void){}
 void Z80::RET_M(void){}
 void Z80::LD_SP_HL(void){}
-void Z80::JP_M_word(void){}
+
+void Z80::JP_M_word(void)
+{
+#ifdef INSTRUCTION_TRACE
+	std::cout << "JP_M_word" << std::endl;
+#endif
+	if(mainRegisters.af.f & CARRY_BIT)
+	{
+		uint16_t address = memory->ReadByte(PC++);
+		address |= (memory->ReadByte(PC) << 8);
+		PC = address;
+	}
+	else
+	{
+		PC += 2;
+	}
+}
+
 void Z80::EI(void){}
 void Z80::CALL_M_word(void){}
 void Z80::FD(void){}
