@@ -5,11 +5,11 @@
 
 int main(int argc, char* argv[])
 {
-  Memory memory(0xFF);
+  Memory memory(0xFFFF);
   Z80 z80(&memory);
 
-for(int i = 0; i < 500; i++)
-	z80.Execute();
+	for(int i = 0; i < 0xFFFF; i++)
+		z80.Execute();
 	return 0; 
 }
  

@@ -291,7 +291,15 @@ void Z80::LD_BC_word(void)
 	mainRegisters.bc.b = memory->ReadByte(PC++);
 }
         
-void Z80::LD_iBC_A(void){}          
+void Z80::LD_iBC_A(void)
+{
+#ifdef INSTRUCTION_TRACE
+	std::cout << "LD_iBC_A" << std::endl;
+#endif
+
+	memory->WriteByte(mainRegisters.bc.bc, mainRegisters.af.a);
+}          
+
 void Z80::INC_BC(void){}            
 void Z80::INC_B(void){}
 void Z80::DEC_B(void){}             
@@ -332,7 +340,15 @@ void Z80::LD_DE_word(void)
 	mainRegisters.de.d = memory->ReadByte(PC++);
 }
 
-void Z80::LD_iDE_A(void){}
+void Z80::LD_iDE_A(void)
+{
+#ifdef INSTRUCTION_TRACE
+	std::cout << "LD_iDE_A" << std::endl;
+#endif
+
+	memory->WriteByte(mainRegisters.de.de, mainRegisters.af.a);
+}
+
 void Z80::INC_DE(void){}
 void Z80::INC_D(void){}
 void Z80::DEC_D(void){}
