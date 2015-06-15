@@ -1,10 +1,11 @@
 #include "Z80.h"
 #include "MemoryInterface.h"
+#include "IOInterface.h"
 #include "OpCodes.h"
 #include <iostream>
 
-Z80::Z80(MemoryInterface *memoryInterface)
-  : mainRegisters(), alternateRegisters(), indexRegisters(), otherRegisters(), PC(0), memory(memoryInterface), Op(new fptr[OpCodes::NUMBER_OF_OPCODES])
+Z80::Z80(MemoryInterface *memoryInterface, IOInterface *ioInterface)
+  : mainRegisters(), alternateRegisters(), indexRegisters(), otherRegisters(), PC(0), memory(memoryInterface), io(ioInterface), Op(new fptr[OpCodes::NUMBER_OF_OPCODES])
 {
   Op[OpCodes::NOP] = &Z80::NOP;               
   Op[OpCodes::LD_BC_word] = &Z80::LD_BC_word;        
