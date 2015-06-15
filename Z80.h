@@ -5,6 +5,7 @@
 #include "Registers.h"
 
 class MemoryInterface;
+class IOInterface;
 
 class Z80
 {
@@ -15,11 +16,12 @@ private:
   OtherRegisters otherRegisters;
   uint16_t PC;
   MemoryInterface *memory;
+  IOInterface *io;
   typedef void (Z80::*fptr)(void);
   fptr *Op;
 
 public:
-  Z80(MemoryInterface *memoryInterface);
+  Z80(MemoryInterface *memoryInterface, IOInterface *ioInterface);
   virtual ~Z80(void);
   void Execute(void);
 

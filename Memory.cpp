@@ -15,7 +15,7 @@ Memory::~Memory(void)
   delete[] memory;
 }
 
-uint8_t Memory::ReadByte(uint16_t address)
+uint8_t Memory::ReadByte(uint16_t address) const
 {
   assert(address < size);
   return memory[address];

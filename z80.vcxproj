@@ -136,11 +136,14 @@
     <None Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="IO.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Memory.cpp" />
     <ClCompile Include="Z80.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="IO.h" />
+    <ClInclude Include="IOInterface.h" />
     <ClInclude Include="Memory.h" />
     <ClInclude Include="MemoryInterface.h" />
     <ClInclude Include="OpCodes.h" />
