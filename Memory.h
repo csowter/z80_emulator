@@ -12,7 +12,7 @@ private:
 public:
   Memory(uint16_t size);
   virtual ~Memory(void);
-  virtual uint8_t ReadByte(uint16_t address);
+  virtual uint8_t ReadByte(uint16_t address) const;
   virtual void WriteByte(uint16_t address, uint8_t data);
 };
 
