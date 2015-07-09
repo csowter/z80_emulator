@@ -4,6 +4,14 @@
 #include "OpCodes.h"
 #include <iostream>
 
+#define INSTRUCTION_TRACE
+
+#ifdef INSTRUCTION_TRACE
+  #define TRACE(x) std::cout << x << std::endl
+#else
+  #define TRACE(x)
+#endif
+
 Z80::Z80(MemoryInterface *memoryInterface, IOInterface *ioInterface)
   : mainRegisters(), alternateRegisters(), indexRegisters(), otherRegisters(), PC(0), memory(memoryInterface), io(ioInterface), Op(new fptr[OpCodes::NUMBER_OF_OPCODES])
 {
@@ -278,34 +286,32 @@ void Z80::Execute(void)
 
 void Z80::NOP(void)
 {
-#ifdef INSTRUCTION_TRACE
-	std::cout << "NOP" << std::endl;
-#endif
+	TRACE("NOP");
 }               
 
 void Z80::LD_BC_word(void)
 {
-#ifdef INSTRUCTION_TRACE
-	std::cout << "LD_BC_word" << std::endl;
-#endif
+
+	TRACE("LD_BC_word"); 
+
 	mainRegisters.bc.c = memory->ReadByte(PC++);
 	mainRegisters.bc.b = memory->ReadByte(PC++);
 }
         
 void Z80::LD_iBC_A(void)
 {
-#ifdef INSTRUCTION_TRACE
-	std::cout << "LD_iBC_A" << std::endl;
-#endif
+
+	TRACE("LD_iBC_A");
+
 
 	memory->WriteByte(mainRegisters.bc.bc, mainRegisters.af.a);
 }          
 
 void Z80::INC_BC(void)
 {
-#ifdef INSTRUCTION_TRACE
-	std::cout << "INC_BC" << std::endl;
-#endif
+
+	TRACE("INC_BC");
+
 	++mainRegisters.bc.bc;
 }
             
@@ -314,9 +320,9 @@ void Z80::DEC_B(void){}
 
 void Z80::LD_B_byte(void)
 {
-#ifdef INSTRUCTION_TRACE
-	std::cout << "LD_B_byte" << std::endl;
-#endif
+
+	TRACE("LD_B_byte"); 
+
 	mainRegisters.bc.b = memory->ReadByte(PC++);
 }    
 
@@ -326,17 +332,17 @@ void Z80::ADD_HL_BC(void){}
 
 void Z80::LD_A_iBC(void)
 {
-#ifdef INSTRUCTION_TRACE
-	std::cout << "LD_A_iBC" << std::endl;
-#endif
+
+	TRACE("LD_A_iBC"); 
+
 	mainRegisters.af.a = memory->ReadByte(mainRegisters.bc.bc);
 }
 
 void Z80::DEC_BC(void)
 {
-#ifdef INSTRUCTION_TRACE
-	std::cout << "DEC_BC" << std::endl;
-#endif
+
+	TRACE("DEC_BC"); 
+
 	--mainRegisters.bc.bc;
 }
 
@@ -345,9 +351,9 @@ void Z80::DEC_C(void){}
 
 void Z80::LD_C_byte(void)
 {
-#ifdef INSTRUCTION_TRACE
-	std::cout << "LD_C_byte" << std::endl;
-#endif
+
+	TRACE("LD_C_byte"); 
+
 	mainRegisters.bc.c = memory->ReadByte(PC++);
 }
 
@@ -356,27 +362,27 @@ void Z80::DJNZ(void){}
 
 void Z80::LD_DE_word(void)
 {
-#ifdef INSTRUCTION_TRACE
-	std::cout << "LD_DE_word" << std::endl;
-#endif
+
+	TRACE("LD_DE_word"); 
+
 	mainRegisters.de.e = memory->ReadByte(PC++);
 	mainRegisters.de.d = memory->ReadByte(PC++);
 }
 
 void Z80::LD_iDE_A(void)
 {
-#ifdef INSTRUCTION_TRACE
-	std::cout << "LD_iDE_A" << std::endl;
-#endif
+
+	TRACE("LD_iDE_A"); 
+
 
 	memory->WriteByte(mainRegisters.de.de, mainRegisters.af.a);
 }
 
 void Z80::INC_DE(void)
 {
-#ifdef INSTRUCTION_TRACE
-	std::cout << "INC_DE" << std::endl;
-#endif
+
+	TRACE("INC_DE"); 
+
 	++mainRegisters.de.de;
 }
 
@@ -385,9 +391,9 @@ void Z80::DEC_D(void){}
 
 void Z80::LD_D_byte(void)
 {
-#ifdef INSTRUCTION_TRACE
-	std::cout << "LD_D_byte" << std::endl;
-#endif
+
+	TRACE("LD_D_byte"); 
+
 	mainRegisters.de.d = memory->ReadByte(PC++);
 }
 
@@ -395,9 +401,9 @@ void Z80::RLA(void){}
 
 void Z80::JR(void)
 {
-#ifdef INSTRUCTION_TRACE
-	std::cout << "JR" << std::endl;
-#endif
+
+	TRACE("JR"); 
+
 	int8_t offset = memory->ReadByte(PC++);
 	PC += offset;
 }
@@ -406,17 +412,17 @@ void Z80::ADD_HL_DE(void){}
 
 void Z80::LD_A_iDE(void)
 {
-#ifdef INSTRUCTION_TRACE
-	std::cout << "LD_A_iDE" << std::endl;
-#endif
+
+	TRACE("LD_A_iDE"); 
+
 	mainRegisters.af.a = memory->ReadByte(mainRegisters.de.de);
 }
 
 void Z80::DEC_DE(void)
 {
-#ifdef INSTRUCTION_TRACE
-	std::cout << "DEC_DE" << std::endl;
-#endif
+
+	TRACE("DEC_DE"); 
+
 	--mainRegisters.de.de;
 }
 
@@ -425,9 +431,9 @@ void Z80::DEC_E(void){}
 
 void Z80::LD_E_byte(void)
 {
-#ifdef INSTRUCTION_TRACE
-	std::cout << "LD_E_byte" << std::endl;
-#endif
+
+	TRACE("LD_E_byte"); 
+
 	mainRegisters.de.e = memory->ReadByte(PC++);
 }
 
@@ -435,9 +441,9 @@ void Z80::RRA(void){}
 
 void Z80::JR_NZ(void)
 {
-#ifdef INSTRUCTION_TRACE
-	std::cout << "JR_NZ" << std::endl;
-#endif
+
+	TRACE("JR_NZ"); 
+
 	if(mainRegisters.af.f & ZERO_BIT)
 	{
 		++PC;
@@ -451,18 +457,18 @@ void Z80::JR_NZ(void)
 
 void Z80::LD_HL_word(void)
 {
-#ifdef INSTRUCTION_TRACE
-	std::cout << "LD_HL_word" << std::endl;
-#endif
+
+	TRACE("LD_HL_word"); 
+
 	mainRegisters.hl.l = memory->ReadByte(PC++);
 	mainRegisters.hl.h = memory->ReadByte(PC++);
 }
 
 void Z80::LD_iNN_HL(void)
 {
-#ifdef INSTRUCTION_TRACE
-	std::cout << "LD_iNN)HL" << std::endl;
-#endif
+
+	TRACE("LD_iNN_HL");
+
 	uint16_t address = memory->ReadByte(PC++);
 	address |= (memory->ReadByte(PC++) << 8);
 	memory->WriteByte(address, mainRegisters.hl.l);
@@ -472,9 +478,9 @@ void Z80::LD_iNN_HL(void)
 
 void Z80::INC_HL(void)
 {
-#ifdef INSTRUCTION_TRACE
-	std::cout << "INC_HL" << std::endl;
-#endif
+
+	TRACE("INC_HL"); 
+
 	++mainRegisters.hl.hl;
 }
 
@@ -483,9 +489,9 @@ void Z80::DEC_H(void){}
 
 void Z80::LD_H_byte(void)
 {
-#ifdef INSTRUCTION_TRACE
-	std::cout << "LD_H_byte" << std::endl;
-#endif
+
+	TRACE("LD_H_byte"); 
+
 	mainRegisters.hl.h = memory->ReadByte(PC++);
 }
 
@@ -493,9 +499,9 @@ void Z80::DAA(void){}
 
 void Z80::JR_Z(void)
 {
-#ifdef INSTRUCTION_TRACE
-	std::cout << "JR_Z" << std::endl;
-#endif
+
+	TRACE("JR_Z"); 
+
 	if(mainRegisters.af.f & ZERO_BIT)
 	{
 		int8_t offset = memory->ReadByte(PC++);
@@ -511,18 +517,18 @@ void Z80::ADD_HL_HL(void){}
 
 void Z80::LD_HL_iNN(void)
 {
-#ifdef INSTRUCTION_TRACE
-	std::cout << "LD_HL_iNN" << std::endl;
-#endif
+
+	TRACE("LD_HL_iNN"); 
+
 	mainRegisters.hl.l = memory->ReadByte(PC++);
 	mainRegisters.hl.h = memory->ReadByte(PC++);
 }
 
 void Z80::DEC_HL(void)
 {
-#ifdef INSTRUCTION_TRACE
-	std::cout << "DEC_HL" << std::endl;
-#endif
+
+	TRACE("DEC_HL"); 
+
 	--mainRegisters.hl.hl;
 }
 
@@ -531,9 +537,9 @@ void Z80::DEC_L(void){}
 
 void Z80::LD_L_byte(void)
 {
-#ifdef INSTRUCTION_TRACE
-	std::cout << "LD_L_byte" << std::endl;
-#endif
+
+	TRACE("LD_L_byte"); 
+
 	mainRegisters.hl.l = memory->ReadByte(PC++);
 }
 
@@ -541,9 +547,9 @@ void Z80::CPL(void){}
 
 void Z80::JR_NC(void)
 {
-#ifdef INSTRUCTION_TRACE
-	std::cout << "JR_NC" << std::endl;
-#endif
+
+	TRACE("JR_NC"); 
+
 	if(mainRegisters.af.f & CARRY_BIT)
 	{
 		++PC;
@@ -557,9 +563,9 @@ void Z80::JR_NC(void)
 
 void Z80::LD_SP_word(void)
 {
-#ifdef INSTRUCTION_TRACE
-	std::cout << "LD_SP_word" << std::endl;
-#endif
+
+	TRACE("LD_SP_word"); 
+
 
 	indexRegisters.sp = memory->ReadByte(PC++);
 	indexRegisters.sp |= (memory->ReadByte(PC++) << 8);
@@ -567,9 +573,9 @@ void Z80::LD_SP_word(void)
 
 void Z80::LD_iNN_A(void)
 {
-#ifdef INSTRUCTION_TRACE
-	std::cout << "LD_iNN_A" << std::endl;
-#endif
+
+	TRACE("LD_iNN_A"); 
+
 	uint16_t address = memory->ReadByte(PC++);
 	address |= (memory->ReadByte(PC++) << 8);
 	memory->WriteByte(address, mainRegisters.af.a);
@@ -577,9 +583,9 @@ void Z80::LD_iNN_A(void)
 
 void Z80::INC_SP(void)
 {
-#ifdef INSTRUCTION_TRACE
-	std::cout << "INC_SP" << std::endl;
-#endif
+
+	TRACE("INC_SP"); 
+
 	++indexRegisters.sp;
 }
 
@@ -588,9 +594,9 @@ void Z80::DEC_iHL(void){}
 
 void Z80::LD_iHL_byte(void)
 {
-#ifdef INSTRUCTION_TRACE
-	std::cout << "LD_iHL_byte" << std::endl;
-#endif
+
+	TRACE("LD_iHL_byte"); 
+
 	memory->WriteByte(mainRegisters.hl.hl, memory->ReadByte(PC++));
 }
 
@@ -598,9 +604,9 @@ void Z80::SCF(void){}
 
 void Z80::JR_C(void)
 {
-#ifdef INSTRUCTION_TRACE
-	std::cout << "JR_C" << std::endl;
-#endif
+
+	TRACE("JR_C"); 
+
 	if(mainRegisters.af.f & CARRY_BIT)
 	{
 		int8_t offset = memory->ReadByte(PC++);
@@ -616,9 +622,9 @@ void Z80::ADD_HL_SP(void){}
 
 void Z80::LD_A_iNN(void)
 {
-#ifdef INSTRUCTION_TRACE
-	std::cout << "LD_A_iNN" << std::endl;
-#endif
+
+	TRACE("LD_A_iNN"); 
+
 	uint16_t address = memory->ReadByte(PC++);
 	address |= (memory->ReadByte(PC++) << 8);
 	mainRegisters.af.a = memory->ReadByte(address);
@@ -626,9 +632,9 @@ void Z80::LD_A_iNN(void)
 
 void Z80::DEC_SP(void)
 {
-#ifdef INSTRUCTION_TRACE
-	std::cout << "DEC_SP" << std::endl;
-#endif
+
+	TRACE("DEC_SP"); 
+
 	--indexRegisters.sp;
 }
 
@@ -637,9 +643,9 @@ void Z80::DEC_A(void){}
 
 void Z80::LD_A_byte(void)
 {
-#ifdef INSTRUCTION_TRACE
-	std::cout << "LD_A_byte" << std::endl;
-#endif
+
+	TRACE("LD_A_byte"); 
+
 	mainRegisters.af.a = memory->ReadByte(PC++);
 }
 
@@ -698,7 +704,10 @@ void Z80::LD_iHL_D(void){memory->WriteByte(mainRegisters.hl.hl, mainRegisters.de
 void Z80::LD_iHL_E(void){memory->WriteByte(mainRegisters.hl.hl, mainRegisters.de.e);}
 void Z80::LD_iHL_H(void){memory->WriteByte(mainRegisters.hl.hl, mainRegisters.hl.h);}
 void Z80::LD_iHL_L(void){memory->WriteByte(mainRegisters.hl.hl, mainRegisters.hl.l);}
-void Z80::HALT(void){}
+void Z80::HALT(void)
+{
+
+}
 void Z80::LD_iHL_A(void){memory->WriteByte(mainRegisters.hl.hl, mainRegisters.af.a);}
 void Z80::LD_A_B(void){mainRegisters.af.a = mainRegisters.bc.b;}
 void Z80::LD_A_C(void){mainRegisters.af.a = mainRegisters.bc.c;}
@@ -776,18 +785,18 @@ void Z80::RET_NZ(void){}
 
 void Z80::POP_BC(void)
 {
-#ifdef INSTRUCTION_TRACE
-	std::cout << "POP_BC" << std::endl;
-#endif
+
+	TRACE("POP_BC"); 
+
 	mainRegisters.bc.c = memory->ReadByte(indexRegisters.sp++);
 	mainRegisters.bc.b = memory->ReadByte(indexRegisters.sp++);
 }
 
 void Z80::JP_NZ_word(void)
 {
-#ifdef INSTRUCTION_TRACE
-	std::cout << "JP_NZ_word" << std::endl;
-#endif
+
+	TRACE("JP_NZ_word"); 
+
 	if(mainRegisters.af.f & ZERO_BIT)
 	{
 		PC += 2;
@@ -802,9 +811,9 @@ void Z80::JP_NZ_word(void)
 
 void Z80::JP_word(void)
 {
-#ifdef INSTRUCTION_TRACE
-	std::cout << "JP_word" << std::endl;
-#endif
+
+	TRACE("JP_word"); 
+
 	uint16_t address = memory->ReadByte(PC++);
 	address |= (memory->ReadByte(PC++) << 8);
 	PC = address;
@@ -814,9 +823,9 @@ void Z80::CALL_NZ_word(void){}
 
 void Z80::PUSH_BC(void)
 {
-#ifdef INSTRUCTION_TRACE
-	std::cout << "PUSH_BC" << std::endl;
-#endif
+
+	TRACE("PUSH_BC"); 
+
 	memory->WriteByte(--indexRegisters.sp, mainRegisters.bc.b);
 	memory->WriteByte(--indexRegisters.sp, mainRegisters.bc.c);
 }
@@ -828,9 +837,9 @@ void Z80::RET(void){}
 
 void Z80::JP_Z_word(void)
 {
-#ifdef INSTRUCTION_TRACE
-	std::cout << "JP_Z_word" << std::endl;
-#endif
+
+	TRACE("JP_Z_word"); 
+
 	if(mainRegisters.af.f & ZERO_BIT)
 	{
 		uint16_t address = memory->ReadByte(PC++);
@@ -852,18 +861,18 @@ void Z80::RET_NC(void){}
 
 void Z80::POP_DE(void)
 {
-#ifdef INSTRUCTION_TRACE
-	std::cout << "POP_DE" << std::endl;
-#endif
+
+	TRACE("POP_DE"); 
+
 	mainRegisters.de.e = memory->ReadByte(indexRegisters.sp++);
 	mainRegisters.de.d = memory->ReadByte(indexRegisters.sp++);
 }
 
 void Z80::JP_NC_word(void)
 {
-#ifdef INSTRUCTION_TRACE
-	std::cout << "JP_NC_word" << std::endl;
-#endif
+
+	TRACE("JP_NC_word"); 
+
 	if(mainRegisters.af.f & CARRY_BIT)
 	{
 		PC += 2;
@@ -881,9 +890,9 @@ void Z80::CALL_NC_word(void){}
 
 void Z80::PUSH_DE(void)
 {
-#ifdef INSTRUCTION_TRACE
-	std::cout << "PUSH_DE" << std::endl;
-#endif
+
+	TRACE("PUSH_DE"); 
+
 	memory->WriteByte(--indexRegisters.sp, mainRegisters.de.d);
 	memory->WriteByte(--indexRegisters.sp, mainRegisters.de.e);
 }
@@ -895,9 +904,8 @@ void Z80::EXX(void){uint16_t swap = mainRegisters.bc.bc; mainRegisters.bc.bc = a
 
 void Z80::JP_C_word(void)
 {
-#ifdef  INSTRUCTION_TRACE
-	std::cout << "JP_C_word" << std::endl;
-#endif
+	TRACE("JP_C_word"); 
+
 
 	if(mainRegisters.af.f & CARRY_BIT)
 	{
@@ -920,18 +928,18 @@ void Z80::RET_PO(void){}
 
 void Z80::POP_HL(void)
 {
-#ifdef INSTRUCTION_TRACE
-	std::cout << "POP_HL" << std::endl;
-#endif
+
+	TRACE("POP_HL"); 
+
 	mainRegisters.hl.l = memory->ReadByte(indexRegisters.sp++);
 	mainRegisters.hl.h = memory->ReadByte(indexRegisters.sp++);
 }
 
 void Z80::JP_PO_word(void)
 {
-#ifdef INSTRUCTION_TRACE
-	std::cout << "JP_PO_word" << std::endl;
-#endif
+
+	TRACE("JP_PO_word"); 
+
 	if(mainRegisters.af.f & PARITY_OVERFLOW_BIT)
 	{
 		PC += 2;
@@ -946,9 +954,9 @@ void Z80::JP_PO_word(void)
 
 void Z80::EX_iSP_HL(void)
 {
-#ifdef INSTRUCTION_TRACE
-	std::cout << "EX_iSP_HL" << std::endl;
-#endif
+
+	TRACE("EX_iSP_HL"); 
+
 	uint8_t temp = memory->ReadByte(indexRegisters.sp);
 	memory->WriteByte(indexRegisters.sp, mainRegisters.hl.l);
 	mainRegisters.hl.l = temp;
@@ -962,9 +970,9 @@ void Z80::CALL_PO_word(void){}
 
 void Z80::PUSH_HL(void)
 {
-#ifdef INSTRUCTION_TRACE
-	std::cout << "PUSH_HL" << std::endl;
-#endif
+
+	TRACE("PUSH_HL"); 
+
 	memory->WriteByte(--indexRegisters.sp, mainRegisters.hl.h);
 	memory->WriteByte(--indexRegisters.sp, mainRegisters.hl.l);
 }
@@ -975,17 +983,17 @@ void Z80::RET_PE(void){}
 
 void Z80::JP_iHL(void)
 {
-#ifdef INSTRUCTION_TRACE
-	std::cout << "JP_iHL" << std::endl;
-#endif
+
+	TRACE("JP_iHL"); 
+
 	PC = mainRegisters.hl.hl;
 }
 
 void Z80::JP_PE_word(void)
 {
-#ifdef INSTRUCTION_TRACE
-	std::cout << "JP_PE_word" << std::endl;
-#endif
+
+	TRACE("JP_PE_word"); 
+
 	if(mainRegisters.af.f & PARITY_OVERFLOW_BIT)
 	{
 		uint16_t address = memory->ReadByte(PC++);
@@ -1007,18 +1015,18 @@ void Z80::RET_P(void){}
 
 void Z80::POP_AF(void)
 {
-#ifdef INSTRUCTION_TRACE
-	std::cout <<"POP_AF" << std::endl;
-#endif
+
+	TRACE("POP_AF"); 
+
 	mainRegisters.af.f = memory->ReadByte(indexRegisters.sp++);
 	mainRegisters.af.a = memory->ReadByte(indexRegisters.sp++);
 }
 
 void Z80::JP_P_word(void)
 {
-#ifdef INSTRUCTION_TRACE
-	std::cout << "JP_P_word" << std::endl;
-#endif
+
+	TRACE("JP_P_word"); 
+
 	if(mainRegisters.af.f & SIGN_BIT)
 	{
 		PC += 2;
@@ -1036,9 +1044,9 @@ void Z80::CALL_P_word(void){}
 
 void Z80::PUSH_AF(void)
 {
-#ifdef INSTRUCTION_TRACE
-	std::cout << "PUSH_AF" << std::endl;
-#endif
+
+	TRACE("PUSH_AF"); 
+
 	memory->WriteByte(--indexRegisters.sp, mainRegisters.af.a);
 	memory->WriteByte(--indexRegisters.sp, mainRegisters.af.f);
 }
@@ -1049,17 +1057,17 @@ void Z80::RET_M(void){}
 
 void Z80::LD_SP_HL(void)
 {
-#ifdef INSTRUCTION_TRACE
-	std::cout << "LD_SP_HL" << std::endl;
-#endif
+
+	TRACE("LD_SP_HL"); 
+
 	indexRegisters.sp = mainRegisters.hl.hl;
 }
 
 void Z80::JP_M_word(void)
 {
-#ifdef INSTRUCTION_TRACE
-	std::cout << "JP_M_word" << std::endl;
-#endif
+
+	TRACE("JP_M_word"); 
+
 	if(mainRegisters.af.f & CARRY_BIT)
 	{
 		uint16_t address = memory->ReadByte(PC++);
