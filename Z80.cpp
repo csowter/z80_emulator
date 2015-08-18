@@ -4,7 +4,7 @@
 #include "OpCodes.h"
 #include <iostream>
 
-#define INSTRUCTION_TRACE
+//#define INSTRUCTION_TRACE
 
 #ifdef INSTRUCTION_TRACE
   #define TRACE(x) std::cout << x << std::endl
@@ -315,7 +315,20 @@ void Z80::INC_BC(void)
 	++mainRegisters.bc.bc;
 }
             
-void Z80::INC_B(void){}
+void Z80::INC_B(void)
+{
+  TRACE("INC_B");
+  mainRegisters.bc.b++;
+  mainRegisters.af.f &= ~(SUBTRACT_BIT | SIGN_BIT | ZERO_BIT | PARITY_OVERFLOW_BIT | HALF_CARRY_BIT);
+  mainRegisters.af.f |= (SIGN_BIT & mainRegisters.bc.b);
+  if(mainRegisters.bc.b == 0) 
+    mainRegisters.af.f |= (ZERO_BIT);
+  if(mainRegisters.bc.b == 0x80)
+    mainRegisters.af.f |= PARITY_OVERFLOW_BIT;
+  if(mainRegisters.bc.b == 0x10)
+    mainRegisters.af.f |= HALF_CARRY_BIT;
+}
+
 void Z80::DEC_B(void){}             
 
 void Z80::LD_B_byte(void)
@@ -354,7 +367,19 @@ void Z80::DEC_BC(void)
 	--mainRegisters.bc.bc;
 }
 
-void Z80::INC_C(void){}
+void Z80::INC_C(void)
+{
+  TRACE("INC_C");
+  ++mainRegisters.bc.c;
+  mainRegisters.af.f &= ~(SUBTRACT_BIT | SIGN_BIT | ZERO_BIT | PARITY_OVERFLOW_BIT | HALF_CARRY_BIT);
+  mainRegisters.af.f |= (SIGN_BIT & mainRegisters.bc.c);
+  if(mainRegisters.bc.c == 0) 
+    mainRegisters.af.f |= (ZERO_BIT);
+  if(mainRegisters.bc.c == 0x80)
+    mainRegisters.af.f |= PARITY_OVERFLOW_BIT;
+  if(mainRegisters.bc.c == 0x10)
+    mainRegisters.af.f |= HALF_CARRY_BIT;
+}
 void Z80::DEC_C(void){}
 
 void Z80::LD_C_byte(void)
@@ -394,7 +419,19 @@ void Z80::INC_DE(void)
 	++mainRegisters.de.de;
 }
 
-void Z80::INC_D(void){}
+void Z80::INC_D(void)
+{
+  TRACE("INC_D");
+  ++mainRegisters.de.d;
+  mainRegisters.af.f &= ~(SUBTRACT_BIT | SIGN_BIT | ZERO_BIT | PARITY_OVERFLOW_BIT | HALF_CARRY_BIT);
+  mainRegisters.af.f |= (SIGN_BIT & mainRegisters.de.d);
+  if(mainRegisters.de.d == 0) 
+    mainRegisters.af.f |= (ZERO_BIT);
+  if(mainRegisters.de.d == 0x80)
+    mainRegisters.af.f |= PARITY_OVERFLOW_BIT;
+  if(mainRegisters.de.d == 0x10)
+    mainRegisters.af.f |= HALF_CARRY_BIT;
+}
 void Z80::DEC_D(void){}
 
 void Z80::LD_D_byte(void)
@@ -434,7 +471,20 @@ void Z80::DEC_DE(void)
 	--mainRegisters.de.de;
 }
 
-void Z80::INC_E(void){}
+void Z80::INC_E(void)
+{
+  TRACE("INC_E");
+  ++mainRegisters.de.e;
+  mainRegisters.af.f &= ~(SUBTRACT_BIT | SIGN_BIT | ZERO_BIT | PARITY_OVERFLOW_BIT | HALF_CARRY_BIT);
+  mainRegisters.af.f |= (SIGN_BIT & mainRegisters.de.e);
+  if(mainRegisters.de.e == 0) 
+    mainRegisters.af.f |= (ZERO_BIT);
+  if(mainRegisters.de.e == 0x80)
+    mainRegisters.af.f |= PARITY_OVERFLOW_BIT;
+  if(mainRegisters.de.e == 0x10)
+    mainRegisters.af.f |= HALF_CARRY_BIT;
+}
+
 void Z80::DEC_E(void){}
 
 void Z80::LD_E_byte(void)
@@ -492,7 +542,19 @@ void Z80::INC_HL(void)
 	++mainRegisters.hl.hl;
 }
 
-void Z80::INC_H(void){}
+void Z80::INC_H(void)
+{
+  TRACE("INC_H");
+  ++mainRegisters.hl.h;
+  mainRegisters.af.f &= ~(SUBTRACT_BIT | SIGN_BIT | ZERO_BIT | PARITY_OVERFLOW_BIT | HALF_CARRY_BIT);
+  mainRegisters.af.f |= (SIGN_BIT & mainRegisters.hl.h);
+  if(mainRegisters.hl.h == 0) 
+    mainRegisters.af.f |= (ZERO_BIT);
+  if(mainRegisters.hl.h == 0x80)
+    mainRegisters.af.f |= PARITY_OVERFLOW_BIT;
+  if(mainRegisters.hl.h == 0x10)
+    mainRegisters.af.f |= HALF_CARRY_BIT;
+}
 void Z80::DEC_H(void){}
 
 void Z80::LD_H_byte(void)
@@ -540,7 +602,20 @@ void Z80::DEC_HL(void)
 	--mainRegisters.hl.hl;
 }
 
-void Z80::INC_L(void){}
+void Z80::INC_L(void)
+{
+  TRACE("INC_L");
+  ++mainRegisters.hl.l;
+  mainRegisters.af.f &= ~(SUBTRACT_BIT | SIGN_BIT | ZERO_BIT | PARITY_OVERFLOW_BIT | HALF_CARRY_BIT);
+  mainRegisters.af.f |= (SIGN_BIT & mainRegisters.hl.l);
+  if(mainRegisters.hl.l == 0) 
+    mainRegisters.af.f |= (ZERO_BIT);
+  if(mainRegisters.hl.l == 0x80)
+    mainRegisters.af.f |= PARITY_OVERFLOW_BIT;
+  if(mainRegisters.hl.l == 0x10)
+    mainRegisters.af.f |= HALF_CARRY_BIT;
+}
+
 void Z80::DEC_L(void){}
 
 void Z80::LD_L_byte(void)
