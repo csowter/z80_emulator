@@ -327,7 +327,15 @@ void Z80::LD_B_byte(void)
 }    
 
 void Z80::RLCA(void){}
-void Z80::EX_AF_AF(void){uint16_t af = mainRegisters.af.af; mainRegisters.af.af = alternateRegisters.af.af; alternateRegisters.af.af = af;}
+
+void Z80::EX_AF_AF(void)
+{
+  TRACE("EX_AF_AF");
+  uint16_t af = mainRegisters.af.af;
+  mainRegisters.af.af = alternateRegisters.af.af;
+  alternateRegisters.af.af = af;
+}
+
 void Z80::ADD_HL_BC(void){}
 
 void Z80::LD_A_iBC(void)
@@ -650,73 +658,387 @@ void Z80::LD_A_byte(void)
 }
 
 void Z80::CCF(void){}
-void Z80::LD_B_B(void){mainRegisters.bc.b = mainRegisters.bc.b;}
-void Z80::LD_B_C(void){mainRegisters.bc.b = mainRegisters.bc.c;}
-void Z80::LD_B_D(void){mainRegisters.bc.b = mainRegisters.de.d;}
-void Z80::LD_B_E(void){mainRegisters.bc.b = mainRegisters.de.e;}
-void Z80::LD_B_H(void){mainRegisters.bc.b = mainRegisters.hl.h;}
-void Z80::LD_B_L(void){mainRegisters.bc.b = mainRegisters.hl.l;}
-void Z80::LD_B_iHL(void){mainRegisters.bc.b = memory->ReadByte(mainRegisters.hl.hl);}
-void Z80::LD_B_A(void){mainRegisters.bc.b = mainRegisters.af.a;}
-void Z80::LD_C_B(void){mainRegisters.bc.c = mainRegisters.bc.b;}
-void Z80::LD_C_C(void){mainRegisters.bc.c = mainRegisters.bc.c;}
-void Z80::LD_C_D(void){mainRegisters.bc.c = mainRegisters.de.d;}
-void Z80::LD_C_E(void){mainRegisters.bc.c = mainRegisters.de.e;}
-void Z80::LD_C_H(void){mainRegisters.bc.c = mainRegisters.hl.h;}
-void Z80::LD_C_L(void){mainRegisters.bc.c = mainRegisters.hl.l;}
-void Z80::LD_C_iHL(void){mainRegisters.bc.c = memory->ReadByte(mainRegisters.hl.hl);}
-void Z80::LD_C_A(void){mainRegisters.bc.c = mainRegisters.af.a;}
-void Z80::LD_D_B(void){mainRegisters.de.d = mainRegisters.bc.b;}
-void Z80::LD_D_C(void){mainRegisters.de.d = mainRegisters.bc.c;}
-void Z80::LD_D_D(void){mainRegisters.de.d = mainRegisters.de.d;}
-void Z80::LD_D_E(void){mainRegisters.de.d = mainRegisters.de.e;}
-void Z80::LD_D_H(void){mainRegisters.de.d = mainRegisters.hl.h;}
-void Z80::LD_D_L(void){mainRegisters.de.d = mainRegisters.hl.l;}
-void Z80::LD_D_iHL(void){mainRegisters.de.d = memory->ReadByte(mainRegisters.hl.hl);}
-void Z80::LD_D_A(void){mainRegisters.de.d = mainRegisters.af.a;}
-void Z80::LD_E_B(void){mainRegisters.de.e = mainRegisters.bc.b;}
-void Z80::LD_E_C(void){mainRegisters.de.e = mainRegisters.bc.c;}
-void Z80::LD_E_D(void){mainRegisters.de.e = mainRegisters.de.d;}
-void Z80::LD_E_E(void){mainRegisters.de.e = mainRegisters.de.e;}
-void Z80::LD_E_H(void){mainRegisters.de.e = mainRegisters.hl.h;}
-void Z80::LD_E_L(void){mainRegisters.de.e = mainRegisters.hl.l;}
-void Z80::LD_E_iHL(void){mainRegisters.de.e = memory->ReadByte(mainRegisters.hl.hl);}
-void Z80::LD_E_A(void){mainRegisters.de.e = mainRegisters.af.a;}
-void Z80::LD_H_B(void){mainRegisters.hl.h = mainRegisters.bc.b;}
-void Z80::LD_H_C(void){mainRegisters.hl.h = mainRegisters.bc.c;}
-void Z80::LD_H_D(void){mainRegisters.hl.h = mainRegisters.de.d;}
-void Z80::LD_H_E(void){mainRegisters.hl.h = mainRegisters.de.e;}
-void Z80::LD_H_H(void){mainRegisters.hl.h = mainRegisters.hl.h;}
-void Z80::LD_H_L(void){mainRegisters.hl.h = mainRegisters.hl.l;}
-void Z80::LD_H_iHL(void){mainRegisters.hl.h = memory->ReadByte(mainRegisters.hl.hl);}
-void Z80::LD_H_A(void){mainRegisters.hl.h = mainRegisters.af.a;}
-void Z80::LD_L_B(void){mainRegisters.hl.l = mainRegisters.bc.b;}
-void Z80::LD_L_C(void){mainRegisters.hl.l = mainRegisters.bc.c;}
-void Z80::LD_L_D(void){mainRegisters.hl.l = mainRegisters.de.d;}
-void Z80::LD_L_E(void){mainRegisters.hl.l = mainRegisters.de.e;}
-void Z80::LD_L_H(void){mainRegisters.hl.l = mainRegisters.hl.h;}
-void Z80::LD_L_L(void){mainRegisters.hl.l = mainRegisters.hl.l;}
-void Z80::LD_L_iHL(void){mainRegisters.hl.l = memory->ReadByte(mainRegisters.hl.hl);}
-void Z80::LD_L_A(void){mainRegisters.hl.l = mainRegisters.af.a;}
-void Z80::LD_iHL_B(void){memory->WriteByte(mainRegisters.hl.hl, mainRegisters.bc.b);}
-void Z80::LD_iHL_C(void){memory->WriteByte(mainRegisters.hl.hl, mainRegisters.bc.c);}
-void Z80::LD_iHL_D(void){memory->WriteByte(mainRegisters.hl.hl, mainRegisters.de.d);}
-void Z80::LD_iHL_E(void){memory->WriteByte(mainRegisters.hl.hl, mainRegisters.de.e);}
-void Z80::LD_iHL_H(void){memory->WriteByte(mainRegisters.hl.hl, mainRegisters.hl.h);}
-void Z80::LD_iHL_L(void){memory->WriteByte(mainRegisters.hl.hl, mainRegisters.hl.l);}
-void Z80::HALT(void)
-{
 
+void Z80::LD_B_B(void)
+{
+  TRACE("LD_B_B");
+  mainRegisters.bc.b = mainRegisters.bc.b;
 }
-void Z80::LD_iHL_A(void){memory->WriteByte(mainRegisters.hl.hl, mainRegisters.af.a);}
-void Z80::LD_A_B(void){mainRegisters.af.a = mainRegisters.bc.b;}
-void Z80::LD_A_C(void){mainRegisters.af.a = mainRegisters.bc.c;}
-void Z80::LD_A_D(void){mainRegisters.af.a = mainRegisters.de.d;}
-void Z80::LD_A_E(void){mainRegisters.af.a = mainRegisters.de.e;}
-void Z80::LD_A_H(void){mainRegisters.af.a = mainRegisters.hl.h;}
-void Z80::LD_A_L(void){mainRegisters.af.a = mainRegisters.hl.l;}
-void Z80::LD_A_iHL(void){mainRegisters.af.a = memory->ReadByte(mainRegisters.hl.hl);}
-void Z80::LD_A_A(void){mainRegisters.af.a = mainRegisters.af.a;}
+
+void Z80::LD_B_C(void)
+{
+  TRACE("LD_B_C");
+  mainRegisters.bc.b = mainRegisters.bc.c;
+}
+
+void Z80::LD_B_D(void)
+{
+  TRACE("LD_B_D");
+  mainRegisters.bc.b = mainRegisters.de.d;
+}
+
+void Z80::LD_B_E(void)
+{
+  TRACE("LD_B_E");
+  mainRegisters.bc.b = mainRegisters.de.e;
+}
+
+void Z80::LD_B_H(void)
+{
+  TRACE("LD_B_H");
+  mainRegisters.bc.b = mainRegisters.hl.h;
+}
+
+void Z80::LD_B_L(void)
+{
+  TRACE("LD_B_L");
+  mainRegisters.bc.b = mainRegisters.hl.l;
+}
+
+void Z80::LD_B_iHL(void)
+{
+  TRACE("LD_B_iHL");
+  mainRegisters.bc.b = memory->ReadByte(mainRegisters.hl.hl);
+}
+
+void Z80::LD_B_A(void)
+{
+  TRACE("LD_B_A");
+  mainRegisters.bc.b = mainRegisters.af.a;
+}
+
+void Z80::LD_C_B(void)
+{
+  TRACE("LD_C_B");
+  mainRegisters.bc.c = mainRegisters.bc.b;
+}
+
+void Z80::LD_C_C(void)
+{
+  TRACE("LD_C_C");
+  mainRegisters.bc.c = mainRegisters.bc.c;
+}
+
+void Z80::LD_C_D(void)
+{
+  TRACE("LD_C_D");
+  mainRegisters.bc.c = mainRegisters.de.d;
+}
+
+void Z80::LD_C_E(void)
+{
+  TRACE("LD_C_E");
+  mainRegisters.bc.c = mainRegisters.de.e;
+}
+
+void Z80::LD_C_H(void)
+{
+  TRACE("LD_C_H");
+  mainRegisters.bc.c = mainRegisters.hl.h;
+}
+
+void Z80::LD_C_L(void)
+{
+  TRACE("LD_C_L");
+  mainRegisters.bc.c = mainRegisters.hl.l;
+}
+
+void Z80::LD_C_iHL(void)
+{
+  TRACE("LD_C_iHL");
+  mainRegisters.bc.c = memory->ReadByte(mainRegisters.hl.hl);
+}
+
+void Z80::LD_C_A(void)
+{
+  TRACE("LD_C_A");
+  mainRegisters.bc.c = mainRegisters.af.a;
+}
+
+void Z80::LD_D_B(void)
+{
+  TRACE("LD_D_B");
+  mainRegisters.de.d = mainRegisters.bc.b;
+}
+
+void Z80::LD_D_C(void)
+{
+  TRACE("LD_D_C");
+  mainRegisters.de.d = mainRegisters.bc.c;
+}
+
+void Z80::LD_D_D(void)
+{
+  TRACE("LD_D_D");
+  mainRegisters.de.d = mainRegisters.de.d;
+}
+
+void Z80::LD_D_E(void)
+{
+  TRACE("LD_D_E");
+  mainRegisters.de.d = mainRegisters.de.e;
+}
+
+void Z80::LD_D_H(void)
+{
+  TRACE("LD_D_H");
+  mainRegisters.de.d = mainRegisters.hl.h;
+}
+
+void Z80::LD_D_L(void)
+{
+  TRACE("LD_D_L");
+  mainRegisters.de.d = mainRegisters.hl.l;
+}
+
+void Z80::LD_D_iHL(void)
+{
+  TRACE("LD_D_iHL");
+  mainRegisters.de.d = memory->ReadByte(mainRegisters.hl.hl);
+}
+
+void Z80::LD_D_A(void)
+{
+  TRACE("LD_D_A");
+  mainRegisters.de.d = mainRegisters.af.a;
+}
+
+void Z80::LD_E_B(void)
+{
+  TRACE("LD_E_B");
+  mainRegisters.de.e = mainRegisters.bc.b;
+}
+
+void Z80::LD_E_C(void)
+{
+  TRACE("LD_E_C");
+  mainRegisters.de.e = mainRegisters.bc.c;
+}
+
+void Z80::LD_E_D(void)
+{
+  TRACE("LD_E_D");
+  mainRegisters.de.e = mainRegisters.de.d;
+}
+
+void Z80::LD_E_E(void)
+{
+  TRACE("LD_E_E");
+  mainRegisters.de.e = mainRegisters.de.e;
+}
+
+void Z80::LD_E_H(void)
+{
+  TRACE("LD_E_H");
+  mainRegisters.de.e = mainRegisters.hl.h;
+}
+
+void Z80::LD_E_L(void)
+{
+  TRACE("LD_E_L");
+  mainRegisters.de.e = mainRegisters.hl.l;
+}
+
+void Z80::LD_E_iHL(void)
+{
+  TRACE("LD_E_iHL");
+  mainRegisters.de.e = memory->ReadByte(mainRegisters.hl.hl);
+}
+
+void Z80::LD_E_A(void)
+{
+  TRACE("LD_E_A");
+  mainRegisters.de.e = mainRegisters.af.a;
+}
+
+void Z80::LD_H_B(void)
+{
+  TRACE("LD_H_B");
+  mainRegisters.hl.h = mainRegisters.bc.b;
+}
+
+void Z80::LD_H_C(void)
+{
+  TRACE("LD_H_C");
+  mainRegisters.hl.h = mainRegisters.bc.c;
+}
+
+void Z80::LD_H_D(void)
+{
+  TRACE("LD_H_D");
+  mainRegisters.hl.h = mainRegisters.de.d;
+}
+
+void Z80::LD_H_E(void)
+{
+  TRACE("LD_H_E");
+  mainRegisters.hl.h = mainRegisters.de.e;
+}
+
+void Z80::LD_H_H(void)
+{
+  TRACE("LD_H_H");
+  mainRegisters.hl.h = mainRegisters.hl.h;
+}
+
+void Z80::LD_H_L(void)
+{
+  TRACE("LD_H_L");
+  mainRegisters.hl.h = mainRegisters.hl.l;
+}
+
+void Z80::LD_H_iHL(void)
+{
+  TRACE("LD_H_iHL");
+  mainRegisters.hl.h = memory->ReadByte(mainRegisters.hl.hl);
+}
+
+void Z80::LD_H_A(void)
+{
+  TRACE("LD_H_A");
+  mainRegisters.hl.h = mainRegisters.af.a;
+}
+
+void Z80::LD_L_B(void)
+{
+  TRACE("LD_L_B");
+  mainRegisters.hl.l = mainRegisters.bc.b;
+}
+
+void Z80::LD_L_C(void)
+{
+  TRACE("LD_L_C");
+  mainRegisters.hl.l = mainRegisters.bc.c;
+}
+
+void Z80::LD_L_D(void)
+{
+  TRACE("LD_L_D");
+  mainRegisters.hl.l = mainRegisters.de.d;
+}
+
+void Z80::LD_L_E(void)
+{
+  TRACE("LD_L_E");
+  mainRegisters.hl.l = mainRegisters.de.e;
+}
+
+void Z80::LD_L_H(void)
+{
+  TRACE("LD_L_H");
+  mainRegisters.hl.l = mainRegisters.hl.h;
+}
+
+void Z80::LD_L_L(void)
+{
+  TRACE("LD_L_L");
+  mainRegisters.hl.l = mainRegisters.hl.l;
+}
+
+void Z80::LD_L_iHL(void)
+{
+  TRACE("LD_L_iHL");
+  mainRegisters.hl.l = memory->ReadByte(mainRegisters.hl.hl);
+}
+
+void Z80::LD_L_A(void)
+{
+  TRACE("LD_L_A");
+  mainRegisters.hl.l = mainRegisters.af.a;
+}
+
+void Z80::LD_iHL_B(void)
+{
+  TRACE("LD_iHL_B");
+  memory->WriteByte(mainRegisters.hl.hl, mainRegisters.bc.b);
+}
+
+void Z80::LD_iHL_C(void)
+{
+  TRACE("LD_iHL_C");
+  memory->WriteByte(mainRegisters.hl.hl, mainRegisters.bc.c);
+}
+
+void Z80::LD_iHL_D(void)
+{
+  TRACE("LD_iHL_D");
+  memory->WriteByte(mainRegisters.hl.hl, mainRegisters.de.d);
+}
+
+void Z80::LD_iHL_E(void)
+{
+  TRACE("LD_iHL_E");
+  memory->WriteByte(mainRegisters.hl.hl, mainRegisters.de.e);
+}
+
+void Z80::LD_iHL_H(void)
+{
+  TRACE("LD_iHL_H");
+  memory->WriteByte(mainRegisters.hl.hl, mainRegisters.hl.h);
+}
+
+void Z80::LD_iHL_L(void)
+{
+  TRACE("LD_iHL_L");
+  memory->WriteByte(mainRegisters.hl.hl, mainRegisters.hl.l);
+}
+
+void Z80::HALT(void){}
+
+void Z80::LD_iHL_A(void)
+{
+  TRACE("LD_iHL_A");
+  memory->WriteByte(mainRegisters.hl.hl, mainRegisters.af.a);
+}
+
+void Z80::LD_A_B(void)
+{
+  TRACE("LD_A_B");
+  mainRegisters.af.a = mainRegisters.bc.b;
+}
+
+void Z80::LD_A_C(void)
+{
+  TRACE("LD_A_C");
+  mainRegisters.af.a = mainRegisters.bc.c;
+}
+
+void Z80::LD_A_D(void)
+{
+  TRACE("LD_A_D");
+  mainRegisters.af.a = mainRegisters.de.d;
+}
+
+void Z80::LD_A_E(void)
+{
+  TRACE("LD_A_E");
+  mainRegisters.af.a = mainRegisters.de.e;
+}
+
+void Z80::LD_A_H(void)
+{
+  TRACE("LD_A_H");
+  mainRegisters.af.a = mainRegisters.hl.h;
+}
+
+void Z80::LD_A_L(void)
+{
+  TRACE("LD_A_L");
+  mainRegisters.af.a = mainRegisters.hl.l;
+}
+
+void Z80::LD_A_iHL(void)
+{
+  TRACE("LD_A_iHL");
+  mainRegisters.af.a = memory->ReadByte(mainRegisters.hl.hl);
+}
+
+void Z80::LD_A_A(void)
+{
+  TRACE("LD_A_A");
+  mainRegisters.af.a = mainRegisters.af.a;
+}
+
 void Z80::ADD_A_B(void){}
 void Z80::ADD_A_C(void){}
 void Z80::ADD_A_D(void){}
