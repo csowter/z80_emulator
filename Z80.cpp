@@ -13,7 +13,7 @@
 #endif
 
 Z80::Z80(MemoryInterface *memoryInterface, IOInterface *ioInterface)
-  : mainRegisters(), alternateRegisters(), indexRegisters(), otherRegisters(), PC(0), memory(memoryInterface), io(ioInterface), Op(new fptr[OpCodes::NUMBER_OF_OPCODES])
+  : mainRegisters(), alternateRegisters(), indexRegisters(), otherRegisters(), PC(0), memory(memoryInterface), io(ioInterface), Op(new fptr[OpCodes::NUMBER_OF_OPCODES]), flagTable(new uint8_t[256])
 {
   Op[OpCodes::NOP] = &Z80::NOP;               
   Op[OpCodes::LD_BC_word] = &Z80::LD_BC_word;        
@@ -271,11 +271,39 @@ Z80::Z80(MemoryInterface *memoryInterface, IOInterface *ioInterface)
   Op[OpCodes::FD] = &Z80::FD;
   Op[OpCodes::CP_byte] = &Z80::CP_byte;
   Op[OpCodes::RST_38] = &Z80::RST_38; 
+
+  memset(flagTable, 0x00, 256);
+  flagTable[0] |= ZERO_BIT;
+  for(uint16_t i = 0; i < 256; i++)
+  {
+    uint8_t bitsSet = 0;
+    if(i & 0x01)
+      bitsSet++;
+    if(i & 0x02)
+      bitsSet++;
+    if(i & 0x04)
+      bitsSet++;
+    if(i & 0x08)
+      bitsSet++;
+    if(i & 0x10)
+      bitsSet++;
+    if(i & 0x20)
+      bitsSet++;
+    if(i & 0x40)
+      bitsSet++;
+    if(i & 0x80)
+      bitsSet++;
+
+    if(bitsSet & 0x01)
+      flagTable[i] |= PARITY_OVERFLOW_BIT;
+    flagTable[i] |= 0x80;
+  }
 }
 
 Z80::~Z80(void)
 {
-  delete[] Op;
+  delete[] flagTable;
+  delete[] Op;  
 }
 
 void Z80::Execute(void)
@@ -1243,14 +1271,63 @@ void Z80::SBC_A_H(void){}
 void Z80::SBC_A_L(void){}
 void Z80::SBC_A_iHL(void){}
 void Z80::SBC_A_A(void){}
-void Z80::AND_B(void){}
-void Z80::AND_C(void){}
-void Z80::AND_D(void){}
-void Z80::AND_E(void){}
-void Z80::AND_H(void){}
-void Z80::AND_L(void){}
-void Z80::AND_iHL(void){}
-void Z80::AND_A(void){}
+
+void Z80::AND_B(void)
+{
+  TRACE("AND_B");
+  mainRegisters.af.a &= mainRegisters.bc.b;
+  mainRegisters.af.f = flagTable[mainRegisters.af.a] | HALF_CARRY_BIT;
+}
+
+void Z80::AND_C(void)
+{
+  TRACE("AND_C");
+  mainRegisters.af.a &= mainRegisters.bc.c;
+  mainRegisters.af.f = flagTable[mainRegisters.af.a] | HALF_CARRY_BIT;
+}
+
+void Z80::AND_D(void)
+{
+  TRACE("AND_D");
+  mainRegisters.af.a &= mainRegisters.de.d;
+  mainRegisters.af.f = flagTable[mainRegisters.af.a] | HALF_CARRY_BIT;
+}
+
+void Z80::AND_E(void)
+{
+  TRACE("AND_E");
+  mainRegisters.af.a &= mainRegisters.de.e;
+  mainRegisters.af.f = flagTable[mainRegisters.af.a] | HALF_CARRY_BIT;
+}
+
+void Z80::AND_H(void)
+{
+  TRACE("AND_H");
+  mainRegisters.af.a &= mainRegisters.hl.h;
+  mainRegisters.af.f = flagTable[mainRegisters.af.a] | HALF_CARRY_BIT;
+}
+
+void Z80::AND_L(void)
+{
+  TRACE("AND_L");
+  mainRegisters.af.a &= mainRegisters.hl.l;
+  mainRegisters.af.f = flagTable[mainRegisters.af.a] | HALF_CARRY_BIT;
+}
+
+void Z80::AND_iHL(void)
+{
+  TRACE("AND_iHL");
+  mainRegisters.af.a &= memory->ReadByte(mainRegisters.hl.hl);
+  mainRegisters.af.f = flagTable[mainRegisters.af.a] | HALF_CARRY_BIT;
+}
+
+void Z80::AND_A(void)
+{
+  TRACE("AND_A");
+  mainRegisters.af.a &= mainRegisters.af.a;
+  mainRegisters.af.f = flagTable[mainRegisters.af.a] | HALF_CARRY_BIT;
+}
+
 void Z80::XOR_B(void){}
 void Z80::XOR_C(void){}
 void Z80::XOR_D(void){}
