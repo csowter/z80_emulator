@@ -1336,14 +1336,63 @@ void Z80::XOR_H(void){}
 void Z80::XOR_L(void){}
 void Z80::XOR_iHL(void){}
 void Z80::XOR_A(void){}
-void Z80::OR_B(void){}
-void Z80::OR_C(void){}
-void Z80::OR_D(void){}
-void Z80::OR_E(void){}
-void Z80::OR_H(void){}
-void Z80::OR_L(void){}
-void Z80::OR_iHL(void){}
-void Z80::OR_A(void){}
+
+void Z80::OR_B(void)
+{
+  TRACE("OR_B");
+  mainRegisters.af.a |= mainRegisters.bc.b;
+  mainRegisters.af.f = flagTable[mainRegisters.af.a];
+}
+
+void Z80::OR_C(void)
+{
+  TRACE("OR_C");
+  mainRegisters.af.a |= mainRegisters.bc.c;
+  mainRegisters.af.f = flagTable[mainRegisters.af.a];
+}
+
+void Z80::OR_D(void)
+{
+  TRACE("OR_D");
+  mainRegisters.af.a |= mainRegisters.de.d;
+  mainRegisters.af.f = flagTable[mainRegisters.af.a];
+}
+
+void Z80::OR_E(void)
+{
+  TRACE("OR_E");
+  mainRegisters.af.a |= mainRegisters.de.e;
+  mainRegisters.af.f = flagTable[mainRegisters.af.a];
+}
+
+void Z80::OR_H(void)
+{
+  TRACE("OR_H");
+  mainRegisters.af.a |= mainRegisters.hl.h;
+  mainRegisters.af.f = flagTable[mainRegisters.af.a];
+}
+
+void Z80::OR_L(void)
+{
+  TRACE("OR_L");
+  mainRegisters.af.a |= mainRegisters.hl.l;
+  mainRegisters.af.f = flagTable[mainRegisters.af.a];
+}
+
+void Z80::OR_iHL(void)
+{
+  TRACE("OR_iHL");
+  mainRegisters.af.a |= memory->ReadByte(mainRegisters.hl.hl);
+  mainRegisters.af.f = flagTable[mainRegisters.af.a];
+}
+
+void Z80::OR_A(void)
+{
+  TRACE("OR_A");
+  mainRegisters.af.a |= mainRegisters.af.a;
+  mainRegisters.af.f = flagTable[mainRegisters.af.a];
+}
+
 void Z80::CP_B(void){}
 void Z80::CP_C(void){}
 void Z80::CP_D(void){}
@@ -1548,7 +1597,13 @@ void Z80::PUSH_HL(void)
 	memory->WriteByte(--indexRegisters.sp, mainRegisters.hl.l);
 }
 
-void Z80::AND_byte(void){}
+void Z80::AND_byte(void)
+{
+  TRACE("AND_byte");
+  mainRegisters.af.a &= memory->ReadByte(PC++);
+  mainRegisters.af.f = flagTable[mainRegisters.af.a] | HALF_CARRY_BIT;
+}
+
 void Z80::RST_20(void){}
 void Z80::RET_PE(void){}
 
@@ -1622,7 +1677,13 @@ void Z80::PUSH_AF(void)
 	memory->WriteByte(--indexRegisters.sp, mainRegisters.af.f);
 }
 
-void Z80::OR_byte(void){}
+void Z80::OR_byte(void)
+{
+  TRACE("OR_byte");
+  mainRegisters.af.a |= memory->ReadByte(PC++);
+  mainRegisters.af.f = flagTable[mainRegisters.af.a];
+}
+
 void Z80::RST_30(void){}
 void Z80::RET_M(void){}
 
