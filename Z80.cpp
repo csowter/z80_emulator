@@ -1239,14 +1239,95 @@ void Z80::LD_A_A(void)
   mainRegisters.af.a = mainRegisters.af.a;
 }
 
-void Z80::ADD_A_B(void){}
-void Z80::ADD_A_C(void){}
-void Z80::ADD_A_D(void){}
-void Z80::ADD_A_E(void){}
-void Z80::ADD_A_H(void){}
-void Z80::ADD_A_L(void){}
-void Z80::ADD_A_iHL(void){}
-void Z80::ADD_A_A(void){}
+void Z80::ADD_A_B(void)
+{
+  TRACE("ADD_A_B");
+  uint16_t sum = mainRegisters.af.a + mainRegisters.bc.b;
+  mainRegisters.af.f = flagTable[(sum & 0xFF)] & ~PARITY_OVERFLOW_BIT;
+  mainRegisters.af.f |= ((sum & 0x0100) >> 8);
+  mainRegisters.af.f |= ((mainRegisters.af.a ^ sum ^ mainRegisters.bc.b) & HALF_CARRY_BIT);
+  mainRegisters.af.f |= (((mainRegisters.af.a ^ mainRegisters.bc.b ^ 0x80) & (mainRegisters.bc.b ^ sum) & 0x80) >> 5);
+  mainRegisters.af.a = sum & 0xFF;
+}
+
+void Z80::ADD_A_C(void)
+{
+  TRACE("ADD_A_C");
+  uint16_t sum = mainRegisters.af.a + mainRegisters.bc.c;
+  mainRegisters.af.f = flagTable[(sum & 0xFF)] & ~PARITY_OVERFLOW_BIT;
+  mainRegisters.af.f |= ((sum & 0x0100) >> 8);
+  mainRegisters.af.f |= ((mainRegisters.af.a ^ sum ^ mainRegisters.bc.c) & HALF_CARRY_BIT);
+  mainRegisters.af.f |= (((mainRegisters.af.a ^ mainRegisters.bc.c ^ 0x80) & (mainRegisters.bc.c ^ sum) & 0x80) >> 5);
+  mainRegisters.af.a = sum & 0xFF;
+}
+
+void Z80::ADD_A_D(void)
+{
+  TRACE("ADD_A_D");
+  uint16_t sum = mainRegisters.af.a + mainRegisters.de.d;
+  mainRegisters.af.f = flagTable[(sum & 0xFF)] & ~PARITY_OVERFLOW_BIT;
+  mainRegisters.af.f |= ((sum & 0x0100) >> 8);
+  mainRegisters.af.f |= ((mainRegisters.af.a ^ sum ^ mainRegisters.de.d) & HALF_CARRY_BIT);
+  mainRegisters.af.f |= (((mainRegisters.af.a ^ mainRegisters.de.d ^ 0x80) & (mainRegisters.de.d ^ sum) & 0x80) >> 5);
+  mainRegisters.af.a = sum & 0xFF;
+}
+
+void Z80::ADD_A_E(void)
+{
+  TRACE("ADD_A_E");
+  uint16_t sum = mainRegisters.af.a + mainRegisters.de.e;
+  mainRegisters.af.f = flagTable[(sum & 0xFF)] & ~PARITY_OVERFLOW_BIT;
+  mainRegisters.af.f |= ((sum & 0x0100) >> 8);
+  mainRegisters.af.f |= ((mainRegisters.af.a ^ sum ^ mainRegisters.de.e) & HALF_CARRY_BIT);
+  mainRegisters.af.f |= (((mainRegisters.af.a ^ mainRegisters.de.e ^ 0x80) & (mainRegisters.de.e ^ sum) & 0x80) >> 5);
+  mainRegisters.af.a = sum & 0xFF;
+}
+
+void Z80::ADD_A_H(void)
+{
+  TRACE("ADD_A_H");
+  uint16_t sum = mainRegisters.af.a + mainRegisters.hl.h;
+  mainRegisters.af.f = flagTable[(sum & 0xFF)] & ~PARITY_OVERFLOW_BIT;
+  mainRegisters.af.f |= ((sum & 0x0100) >> 8);
+  mainRegisters.af.f |= ((mainRegisters.af.a ^ sum ^ mainRegisters.hl.h) & HALF_CARRY_BIT);
+  mainRegisters.af.f |= (((mainRegisters.af.a ^ mainRegisters.hl.h ^ 0x80) & (mainRegisters.hl.h ^ sum) & 0x80) >> 5);
+  mainRegisters.af.a = sum & 0xFF;
+}
+
+void Z80::ADD_A_L(void)
+{
+  TRACE("ADD_A_L");
+  uint16_t sum = mainRegisters.af.a + mainRegisters.hl.l;
+  mainRegisters.af.f = flagTable[(sum & 0xFF)] & ~PARITY_OVERFLOW_BIT;
+  mainRegisters.af.f |= ((sum & 0x0100) >> 8);
+  mainRegisters.af.f |= ((mainRegisters.af.a ^ sum ^ mainRegisters.hl.l) & HALF_CARRY_BIT);
+  mainRegisters.af.f |= (((mainRegisters.af.a ^ mainRegisters.hl.l ^ 0x80) & (mainRegisters.hl.l ^ sum) & 0x80) >> 5);
+  mainRegisters.af.a = sum & 0xFF;
+}
+
+void Z80::ADD_A_iHL(void)
+{
+  TRACE("ADD_A_iHL");
+  uint8_t iHL = memory->ReadByte(mainRegisters.hl.hl);
+  uint16_t sum = mainRegisters.af.a + iHL;
+  mainRegisters.af.f = flagTable[(sum & 0xFF)] & ~PARITY_OVERFLOW_BIT;
+  mainRegisters.af.f |= ((sum & 0x0100) >> 8);
+  mainRegisters.af.f |= ((mainRegisters.af.a ^ sum ^ iHL) & HALF_CARRY_BIT);
+  mainRegisters.af.f |= (((mainRegisters.af.a ^ iHL ^ 0x80) & (iHL ^ sum) & 0x80) >> 5);
+  mainRegisters.af.a = sum & 0xFF;
+}
+
+void Z80::ADD_A_A(void)
+{
+  TRACE("ADD_A_A");
+  uint16_t sum = mainRegisters.af.a + mainRegisters.af.a;
+  mainRegisters.af.f = flagTable[(sum & 0xFF)] & ~PARITY_OVERFLOW_BIT;
+  mainRegisters.af.f |= ((sum & 0x0100) >> 8);
+  mainRegisters.af.f |= ((mainRegisters.af.a ^ sum ^ mainRegisters.af.a) & HALF_CARRY_BIT);
+  mainRegisters.af.f |= (((mainRegisters.af.a ^ mainRegisters.af.a ^ 0x80) & (mainRegisters.af.a ^ sum) & 0x80) >> 5);
+  mainRegisters.af.a = sum & 0xFF;
+}
+
 void Z80::ADC_A_B(void){}
 void Z80::ADC_A_C(void){}
 void Z80::ADC_A_D(void){}
