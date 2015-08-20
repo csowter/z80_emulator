@@ -2,7 +2,7 @@
 #include <cstring>
 #include <cassert>
 
-Memory::Memory(uint16_t size)
+Memory::Memory(uint32_t size)
   : memory(new uint8_t[size]), size(size)
 {
   memset(memory, 0x00, size);

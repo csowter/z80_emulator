@@ -1183,7 +1183,11 @@ void Z80::LD_iHL_L(void)
   memory->WriteByte(mainRegisters.hl.hl, mainRegisters.hl.l);
 }
 
-void Z80::HALT(void){}
+void Z80::HALT(void)
+{
+  TRACE("HALT");
+  while(1);
+}
 
 void Z80::LD_iHL_A(void)
 {
