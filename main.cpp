@@ -4,7 +4,7 @@
 
 #include <iostream>
 
-int main(int argc, char* argv[])
+int main(int, char*)
 {
   Memory memory(0x10000);
   IO io;

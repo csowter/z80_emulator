@@ -379,7 +379,14 @@ void Z80::LD_B_byte(void)
 	mainRegisters.bc.b = memory->ReadByte(PC++);
 }    
 
-void Z80::RLCA(void){}
+void Z80::RLCA(void)
+{
+  TRACE("RLCA");
+  mainRegisters.af.f &= ~(CARRY_BIT | HALF_CARRY_BIT | SUBTRACT_BIT);
+  mainRegisters.af.f |= (mainRegisters.af.a & 0x80) >> 7;
+  mainRegisters.af.a <<= 1;
+  mainRegisters.af.a |= mainRegisters.af.f & CARRY_BIT;
+}
 
 void Z80::EX_AF_AF(void)
 {
@@ -1186,7 +1193,7 @@ void Z80::LD_iHL_L(void)
 void Z80::HALT(void)
 {
   TRACE("HALT");
-  while(1);
+  //while(1);
 }
 
 void Z80::LD_iHL_A(void)
