@@ -4,7 +4,7 @@
 #include "OpCodes.h"
 #include <iostream>
 
-//#define INSTRUCTION_TRACE
+#define INSTRUCTION_TRACE
 
 #ifdef INSTRUCTION_TRACE
   #define TRACE(x) std::cout << x << std::endl
@@ -1328,14 +1328,60 @@ void Z80::AND_A(void)
   mainRegisters.af.f = flagTable[mainRegisters.af.a] | HALF_CARRY_BIT;
 }
 
-void Z80::XOR_B(void){}
-void Z80::XOR_C(void){}
-void Z80::XOR_D(void){}
-void Z80::XOR_E(void){}
-void Z80::XOR_H(void){}
-void Z80::XOR_L(void){}
-void Z80::XOR_iHL(void){}
-void Z80::XOR_A(void){}
+void Z80::XOR_B(void)
+{
+  TRACE("XOR_B");
+  mainRegisters.af.a ^= mainRegisters.bc.b;
+  mainRegisters.af.f = flagTable[mainRegisters.af.a];
+}
+
+void Z80::XOR_C(void)
+{
+  TRACE("XOR_C");
+  mainRegisters.af.a ^= mainRegisters.bc.c;
+  mainRegisters.af.f = flagTable[mainRegisters.af.a];
+}
+
+void Z80::XOR_D(void)
+{
+  TRACE("XOR_D");
+  mainRegisters.af.a ^= mainRegisters.de.d;
+  mainRegisters.af.f = flagTable[mainRegisters.af.a];
+}
+
+void Z80::XOR_E(void)
+{
+  TRACE("XOR_E");
+  mainRegisters.af.a ^= mainRegisters.de.e;
+  mainRegisters.af.f = flagTable[mainRegisters.af.a];
+}
+
+void Z80::XOR_H(void)
+{
+  TRACE("XOR_H");
+  mainRegisters.af.a ^= mainRegisters.hl.h;
+  mainRegisters.af.f = flagTable[mainRegisters.af.a];
+}
+
+void Z80::XOR_L(void)
+{
+  TRACE("XOR_L");
+  mainRegisters.af.a ^= mainRegisters.hl.l;
+  mainRegisters.af.f = flagTable[mainRegisters.af.a];
+}
+
+void Z80::XOR_iHL(void)
+{
+  TRACE("XOR_iHL");
+  mainRegisters.af.a ^= memory->ReadByte(mainRegisters.hl.hl);
+  mainRegisters.af.f = flagTable[mainRegisters.af.a];
+}
+void Z80::XOR_A(void)
+{
+  TRACE("XOR_A");
+  mainRegisters.af.a ^= mainRegisters.af.a;
+  mainRegisters.af.f = flagTable[mainRegisters.af.a];
+}
 
 void Z80::OR_B(void)
 {
@@ -1635,7 +1681,14 @@ void Z80::JP_PE_word(void)
 void Z80::EX_DE_HL(void){uint16_t de = mainRegisters.de.de; mainRegisters.de.de = mainRegisters.hl.hl; mainRegisters.hl.hl = de;}
 void Z80::CALL_PE_word(void){}
 void Z80::ED(void){}
-void Z80::XOR_byte(void){}
+
+void Z80::XOR_byte(void)
+{
+  TRACE("XOR_byte");
+  mainRegisters.af.a ^= memory->ReadByte(PC++);
+  mainRegisters.af.f = flagTable[mainRegisters.af.a];
+}
+
 void Z80::RST_28(void){}
 void Z80::RET_P(void){}
 
