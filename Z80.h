@@ -19,6 +19,7 @@ private:
   IOInterface *io;
   typedef void (Z80::*fptr)(void);
   fptr *Op;
+  uint8_t *flagTable;
 
 public:
   Z80(MemoryInterface *memoryInterface, IOInterface *ioInterface);

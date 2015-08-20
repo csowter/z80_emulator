@@ -4,7 +4,7 @@
 #include "OpCodes.h"
 #include <iostream>
 
-//#define INSTRUCTION_TRACE
+#define INSTRUCTION_TRACE
 
 #ifdef INSTRUCTION_TRACE
   #define TRACE(x) std::cout << x << std::endl
@@ -13,7 +13,7 @@
 #endif
 
 Z80::Z80(MemoryInterface *memoryInterface, IOInterface *ioInterface)
-  : mainRegisters(), alternateRegisters(), indexRegisters(), otherRegisters(), PC(0), memory(memoryInterface), io(ioInterface), Op(new fptr[OpCodes::NUMBER_OF_OPCODES])
+  : mainRegisters(), alternateRegisters(), indexRegisters(), otherRegisters(), PC(0), memory(memoryInterface), io(ioInterface), Op(new fptr[OpCodes::NUMBER_OF_OPCODES]), flagTable(new uint8_t[256])
 {
   Op[OpCodes::NOP] = &Z80::NOP;               
   Op[OpCodes::LD_BC_word] = &Z80::LD_BC_word;        
@@ -271,11 +271,39 @@ Z80::Z80(MemoryInterface *memoryInterface, IOInterface *ioInterface)
   Op[OpCodes::FD] = &Z80::FD;
   Op[OpCodes::CP_byte] = &Z80::CP_byte;
   Op[OpCodes::RST_38] = &Z80::RST_38; 
+
+  memset(flagTable, 0x00, 256);
+  flagTable[0] |= ZERO_BIT;
+  for(uint16_t i = 0; i < 256; i++)
+  {
+    uint8_t bitsSet = 0;
+    if(i & 0x01)
+      bitsSet++;
+    if(i & 0x02)
+      bitsSet++;
+    if(i & 0x04)
+      bitsSet++;
+    if(i & 0x08)
+      bitsSet++;
+    if(i & 0x10)
+      bitsSet++;
+    if(i & 0x20)
+      bitsSet++;
+    if(i & 0x40)
+      bitsSet++;
+    if(i & 0x80)
+      bitsSet++;
+
+    if(bitsSet & 0x01)
+      flagTable[i] |= PARITY_OVERFLOW_BIT;
+    flagTable[i] |= 0x80;
+  }
 }
 
 Z80::~Z80(void)
 {
-  delete[] Op;
+  delete[] flagTable;
+  delete[] Op;  
 }
 
 void Z80::Execute(void)
@@ -351,7 +379,14 @@ void Z80::LD_B_byte(void)
 	mainRegisters.bc.b = memory->ReadByte(PC++);
 }    
 
-void Z80::RLCA(void){}
+void Z80::RLCA(void)
+{
+  TRACE("RLCA");
+  mainRegisters.af.f &= ~(CARRY_BIT | HALF_CARRY_BIT | SUBTRACT_BIT);
+  mainRegisters.af.f |= (mainRegisters.af.a & 0x80) >> 7;
+  mainRegisters.af.a <<= 1;
+  mainRegisters.af.a |= mainRegisters.af.f & CARRY_BIT;
+}
 
 void Z80::EX_AF_AF(void)
 {
@@ -1155,7 +1190,11 @@ void Z80::LD_iHL_L(void)
   memory->WriteByte(mainRegisters.hl.hl, mainRegisters.hl.l);
 }
 
-void Z80::HALT(void){}
+void Z80::HALT(void)
+{
+  TRACE("HALT");
+  //while(1);
+}
 
 void Z80::LD_iHL_A(void)
 {
@@ -1211,14 +1250,95 @@ void Z80::LD_A_A(void)
   mainRegisters.af.a = mainRegisters.af.a;
 }
 
-void Z80::ADD_A_B(void){}
-void Z80::ADD_A_C(void){}
-void Z80::ADD_A_D(void){}
-void Z80::ADD_A_E(void){}
-void Z80::ADD_A_H(void){}
-void Z80::ADD_A_L(void){}
-void Z80::ADD_A_iHL(void){}
-void Z80::ADD_A_A(void){}
+void Z80::ADD_A_B(void)
+{
+  TRACE("ADD_A_B");
+  uint16_t sum = mainRegisters.af.a + mainRegisters.bc.b;
+  mainRegisters.af.f = flagTable[(sum & 0xFF)] & ~PARITY_OVERFLOW_BIT;
+  mainRegisters.af.f |= ((sum & 0x0100) >> 8);
+  mainRegisters.af.f |= ((mainRegisters.af.a ^ sum ^ mainRegisters.bc.b) & HALF_CARRY_BIT);
+  mainRegisters.af.f |= (((mainRegisters.af.a ^ mainRegisters.bc.b ^ 0x80) & (mainRegisters.bc.b ^ sum) & 0x80) >> 5);
+  mainRegisters.af.a = sum & 0xFF;
+}
+
+void Z80::ADD_A_C(void)
+{
+  TRACE("ADD_A_C");
+  uint16_t sum = mainRegisters.af.a + mainRegisters.bc.c;
+  mainRegisters.af.f = flagTable[(sum & 0xFF)] & ~PARITY_OVERFLOW_BIT;
+  mainRegisters.af.f |= ((sum & 0x0100) >> 8);
+  mainRegisters.af.f |= ((mainRegisters.af.a ^ sum ^ mainRegisters.bc.c) & HALF_CARRY_BIT);
+  mainRegisters.af.f |= (((mainRegisters.af.a ^ mainRegisters.bc.c ^ 0x80) & (mainRegisters.bc.c ^ sum) & 0x80) >> 5);
+  mainRegisters.af.a = sum & 0xFF;
+}
+
+void Z80::ADD_A_D(void)
+{
+  TRACE("ADD_A_D");
+  uint16_t sum = mainRegisters.af.a + mainRegisters.de.d;
+  mainRegisters.af.f = flagTable[(sum & 0xFF)] & ~PARITY_OVERFLOW_BIT;
+  mainRegisters.af.f |= ((sum & 0x0100) >> 8);
+  mainRegisters.af.f |= ((mainRegisters.af.a ^ sum ^ mainRegisters.de.d) & HALF_CARRY_BIT);
+  mainRegisters.af.f |= (((mainRegisters.af.a ^ mainRegisters.de.d ^ 0x80) & (mainRegisters.de.d ^ sum) & 0x80) >> 5);
+  mainRegisters.af.a = sum & 0xFF;
+}
+
+void Z80::ADD_A_E(void)
+{
+  TRACE("ADD_A_E");
+  uint16_t sum = mainRegisters.af.a + mainRegisters.de.e;
+  mainRegisters.af.f = flagTable[(sum & 0xFF)] & ~PARITY_OVERFLOW_BIT;
+  mainRegisters.af.f |= ((sum & 0x0100) >> 8);
+  mainRegisters.af.f |= ((mainRegisters.af.a ^ sum ^ mainRegisters.de.e) & HALF_CARRY_BIT);
+  mainRegisters.af.f |= (((mainRegisters.af.a ^ mainRegisters.de.e ^ 0x80) & (mainRegisters.de.e ^ sum) & 0x80) >> 5);
+  mainRegisters.af.a = sum & 0xFF;
+}
+
+void Z80::ADD_A_H(void)
+{
+  TRACE("ADD_A_H");
+  uint16_t sum = mainRegisters.af.a + mainRegisters.hl.h;
+  mainRegisters.af.f = flagTable[(sum & 0xFF)] & ~PARITY_OVERFLOW_BIT;
+  mainRegisters.af.f |= ((sum & 0x0100) >> 8);
+  mainRegisters.af.f |= ((mainRegisters.af.a ^ sum ^ mainRegisters.hl.h) & HALF_CARRY_BIT);
+  mainRegisters.af.f |= (((mainRegisters.af.a ^ mainRegisters.hl.h ^ 0x80) & (mainRegisters.hl.h ^ sum) & 0x80) >> 5);
+  mainRegisters.af.a = sum & 0xFF;
+}
+
+void Z80::ADD_A_L(void)
+{
+  TRACE("ADD_A_L");
+  uint16_t sum = mainRegisters.af.a + mainRegisters.hl.l;
+  mainRegisters.af.f = flagTable[(sum & 0xFF)] & ~PARITY_OVERFLOW_BIT;
+  mainRegisters.af.f |= ((sum & 0x0100) >> 8);
+  mainRegisters.af.f |= ((mainRegisters.af.a ^ sum ^ mainRegisters.hl.l) & HALF_CARRY_BIT);
+  mainRegisters.af.f |= (((mainRegisters.af.a ^ mainRegisters.hl.l ^ 0x80) & (mainRegisters.hl.l ^ sum) & 0x80) >> 5);
+  mainRegisters.af.a = sum & 0xFF;
+}
+
+void Z80::ADD_A_iHL(void)
+{
+  TRACE("ADD_A_iHL");
+  uint8_t iHL = memory->ReadByte(mainRegisters.hl.hl);
+  uint16_t sum = mainRegisters.af.a + iHL;
+  mainRegisters.af.f = flagTable[(sum & 0xFF)] & ~PARITY_OVERFLOW_BIT;
+  mainRegisters.af.f |= ((sum & 0x0100) >> 8);
+  mainRegisters.af.f |= ((mainRegisters.af.a ^ sum ^ iHL) & HALF_CARRY_BIT);
+  mainRegisters.af.f |= (((mainRegisters.af.a ^ iHL ^ 0x80) & (iHL ^ sum) & 0x80) >> 5);
+  mainRegisters.af.a = sum & 0xFF;
+}
+
+void Z80::ADD_A_A(void)
+{
+  TRACE("ADD_A_A");
+  uint16_t sum = mainRegisters.af.a + mainRegisters.af.a;
+  mainRegisters.af.f = flagTable[(sum & 0xFF)] & ~PARITY_OVERFLOW_BIT;
+  mainRegisters.af.f |= ((sum & 0x0100) >> 8);
+  mainRegisters.af.f |= ((mainRegisters.af.a ^ sum ^ mainRegisters.af.a) & HALF_CARRY_BIT);
+  mainRegisters.af.f |= (((mainRegisters.af.a ^ mainRegisters.af.a ^ 0x80) & (mainRegisters.af.a ^ sum) & 0x80) >> 5);
+  mainRegisters.af.a = sum & 0xFF;
+}
+
 void Z80::ADC_A_B(void){}
 void Z80::ADC_A_C(void){}
 void Z80::ADC_A_D(void){}
@@ -1243,30 +1363,174 @@ void Z80::SBC_A_H(void){}
 void Z80::SBC_A_L(void){}
 void Z80::SBC_A_iHL(void){}
 void Z80::SBC_A_A(void){}
-void Z80::AND_B(void){}
-void Z80::AND_C(void){}
-void Z80::AND_D(void){}
-void Z80::AND_E(void){}
-void Z80::AND_H(void){}
-void Z80::AND_L(void){}
-void Z80::AND_iHL(void){}
-void Z80::AND_A(void){}
-void Z80::XOR_B(void){}
-void Z80::XOR_C(void){}
-void Z80::XOR_D(void){}
-void Z80::XOR_E(void){}
-void Z80::XOR_H(void){}
-void Z80::XOR_L(void){}
-void Z80::XOR_iHL(void){}
-void Z80::XOR_A(void){}
-void Z80::OR_B(void){}
-void Z80::OR_C(void){}
-void Z80::OR_D(void){}
-void Z80::OR_E(void){}
-void Z80::OR_H(void){}
-void Z80::OR_L(void){}
-void Z80::OR_iHL(void){}
-void Z80::OR_A(void){}
+
+void Z80::AND_B(void)
+{
+  TRACE("AND_B");
+  mainRegisters.af.a &= mainRegisters.bc.b;
+  mainRegisters.af.f = flagTable[mainRegisters.af.a] | HALF_CARRY_BIT;
+}
+
+void Z80::AND_C(void)
+{
+  TRACE("AND_C");
+  mainRegisters.af.a &= mainRegisters.bc.c;
+  mainRegisters.af.f = flagTable[mainRegisters.af.a] | HALF_CARRY_BIT;
+}
+
+void Z80::AND_D(void)
+{
+  TRACE("AND_D");
+  mainRegisters.af.a &= mainRegisters.de.d;
+  mainRegisters.af.f = flagTable[mainRegisters.af.a] | HALF_CARRY_BIT;
+}
+
+void Z80::AND_E(void)
+{
+  TRACE("AND_E");
+  mainRegisters.af.a &= mainRegisters.de.e;
+  mainRegisters.af.f = flagTable[mainRegisters.af.a] | HALF_CARRY_BIT;
+}
+
+void Z80::AND_H(void)
+{
+  TRACE("AND_H");
+  mainRegisters.af.a &= mainRegisters.hl.h;
+  mainRegisters.af.f = flagTable[mainRegisters.af.a] | HALF_CARRY_BIT;
+}
+
+void Z80::AND_L(void)
+{
+  TRACE("AND_L");
+  mainRegisters.af.a &= mainRegisters.hl.l;
+  mainRegisters.af.f = flagTable[mainRegisters.af.a] | HALF_CARRY_BIT;
+}
+
+void Z80::AND_iHL(void)
+{
+  TRACE("AND_iHL");
+  mainRegisters.af.a &= memory->ReadByte(mainRegisters.hl.hl);
+  mainRegisters.af.f = flagTable[mainRegisters.af.a] | HALF_CARRY_BIT;
+}
+
+void Z80::AND_A(void)
+{
+  TRACE("AND_A");
+  mainRegisters.af.a &= mainRegisters.af.a;
+  mainRegisters.af.f = flagTable[mainRegisters.af.a] | HALF_CARRY_BIT;
+}
+
+void Z80::XOR_B(void)
+{
+  TRACE("XOR_B");
+  mainRegisters.af.a ^= mainRegisters.bc.b;
+  mainRegisters.af.f = flagTable[mainRegisters.af.a];
+}
+
+void Z80::XOR_C(void)
+{
+  TRACE("XOR_C");
+  mainRegisters.af.a ^= mainRegisters.bc.c;
+  mainRegisters.af.f = flagTable[mainRegisters.af.a];
+}
+
+void Z80::XOR_D(void)
+{
+  TRACE("XOR_D");
+  mainRegisters.af.a ^= mainRegisters.de.d;
+  mainRegisters.af.f = flagTable[mainRegisters.af.a];
+}
+
+void Z80::XOR_E(void)
+{
+  TRACE("XOR_E");
+  mainRegisters.af.a ^= mainRegisters.de.e;
+  mainRegisters.af.f = flagTable[mainRegisters.af.a];
+}
+
+void Z80::XOR_H(void)
+{
+  TRACE("XOR_H");
+  mainRegisters.af.a ^= mainRegisters.hl.h;
+  mainRegisters.af.f = flagTable[mainRegisters.af.a];
+}
+
+void Z80::XOR_L(void)
+{
+  TRACE("XOR_L");
+  mainRegisters.af.a ^= mainRegisters.hl.l;
+  mainRegisters.af.f = flagTable[mainRegisters.af.a];
+}
+
+void Z80::XOR_iHL(void)
+{
+  TRACE("XOR_iHL");
+  mainRegisters.af.a ^= memory->ReadByte(mainRegisters.hl.hl);
+  mainRegisters.af.f = flagTable[mainRegisters.af.a];
+}
+void Z80::XOR_A(void)
+{
+  TRACE("XOR_A");
+  mainRegisters.af.a ^= mainRegisters.af.a;
+  mainRegisters.af.f = flagTable[mainRegisters.af.a];
+}
+
+void Z80::OR_B(void)
+{
+  TRACE("OR_B");
+  mainRegisters.af.a |= mainRegisters.bc.b;
+  mainRegisters.af.f = flagTable[mainRegisters.af.a];
+}
+
+void Z80::OR_C(void)
+{
+  TRACE("OR_C");
+  mainRegisters.af.a |= mainRegisters.bc.c;
+  mainRegisters.af.f = flagTable[mainRegisters.af.a];
+}
+
+void Z80::OR_D(void)
+{
+  TRACE("OR_D");
+  mainRegisters.af.a |= mainRegisters.de.d;
+  mainRegisters.af.f = flagTable[mainRegisters.af.a];
+}
+
+void Z80::OR_E(void)
+{
+  TRACE("OR_E");
+  mainRegisters.af.a |= mainRegisters.de.e;
+  mainRegisters.af.f = flagTable[mainRegisters.af.a];
+}
+
+void Z80::OR_H(void)
+{
+  TRACE("OR_H");
+  mainRegisters.af.a |= mainRegisters.hl.h;
+  mainRegisters.af.f = flagTable[mainRegisters.af.a];
+}
+
+void Z80::OR_L(void)
+{
+  TRACE("OR_L");
+  mainRegisters.af.a |= mainRegisters.hl.l;
+  mainRegisters.af.f = flagTable[mainRegisters.af.a];
+}
+
+void Z80::OR_iHL(void)
+{
+  TRACE("OR_iHL");
+  mainRegisters.af.a |= memory->ReadByte(mainRegisters.hl.hl);
+  mainRegisters.af.f = flagTable[mainRegisters.af.a];
+}
+
+void Z80::OR_A(void)
+{
+  TRACE("OR_A");
+  mainRegisters.af.a |= mainRegisters.af.a;
+  mainRegisters.af.f = flagTable[mainRegisters.af.a];
+}
+
 void Z80::CP_B(void){}
 void Z80::CP_C(void){}
 void Z80::CP_D(void){}
@@ -1324,8 +1588,26 @@ void Z80::PUSH_BC(void)
 	memory->WriteByte(--indexRegisters.sp, mainRegisters.bc.c);
 }
 
-void Z80::ADD_A_byte(void){}
-void Z80::RST_00(void){}
+void Z80::ADD_A_byte(void)
+{
+  TRACE("ADD_A_byte");
+  uint8_t byte = memory->ReadByte(PC++);
+  uint16_t sum = mainRegisters.af.a + byte;
+  mainRegisters.af.f = flagTable[(sum & 0xFF)] & ~PARITY_OVERFLOW_BIT;
+  mainRegisters.af.f |= ((sum & 0x0100) >> 8);
+  mainRegisters.af.f |= ((mainRegisters.af.a ^ sum ^ byte) & HALF_CARRY_BIT);
+  mainRegisters.af.f |= (((mainRegisters.af.a ^ byte ^ 0x80) & (byte ^ sum) & 0x80) >> 5);
+  mainRegisters.af.a = sum & 0xFF;
+}
+
+void Z80::RST_00(void)
+{
+  TRACE("RST_00");
+  memory->WriteByte(--indexRegisters.sp, ((PC & 0xFF00) >> 8));
+  memory->WriteByte(--indexRegisters.sp, PC & 0xFF);
+  PC = 0x0000;
+}
+
 void Z80::RET_Z(void){}
 void Z80::RET(void){}
 
@@ -1350,7 +1632,15 @@ void Z80::CB(void){}
 void Z80::CALL_Z_word(void){}
 void Z80::CALL_word(void){}
 void Z80::ADC_A_byte(void){}
-void Z80::RST_08(void){}
+
+void Z80::RST_08(void)
+{
+  TRACE("RST_08");
+  memory->WriteByte(--indexRegisters.sp, ((PC & 0xFF00) >> 8));
+  memory->WriteByte(--indexRegisters.sp, PC & 0xFF);
+  PC = 0x0008;
+}
+
 void Z80::RET_NC(void){}
 
 void Z80::POP_DE(void)
@@ -1392,9 +1682,29 @@ void Z80::PUSH_DE(void)
 }
 
 void Z80::SUB_A_byte(void){}
-void Z80::RST_10(void){}
+
+void Z80::RST_10(void)
+{
+  TRACE("RST_10");
+  memory->WriteByte(--indexRegisters.sp, ((PC & 0xFF00) >> 8));
+  memory->WriteByte(--indexRegisters.sp, PC & 0xFF);
+  PC = 0x0010;
+}
 void Z80::RET_C(void){}
-void Z80::EXX(void){uint16_t swap = mainRegisters.bc.bc; mainRegisters.bc.bc = alternateRegisters.bc.bc; alternateRegisters.bc.bc = swap; swap = mainRegisters.de.de; mainRegisters.de.de = alternateRegisters.de.de; alternateRegisters.de.de = swap; swap = mainRegisters.hl.hl; mainRegisters.hl.hl = alternateRegisters.hl.hl; alternateRegisters.hl.hl = swap;}
+
+void Z80::EXX(void)
+{
+  TRACE("EXX");
+  uint16_t swap = mainRegisters.bc.bc;
+  mainRegisters.bc.bc = alternateRegisters.bc.bc;
+  alternateRegisters.bc.bc = swap;
+  swap = mainRegisters.de.de;
+  mainRegisters.de.de = alternateRegisters.de.de;
+  alternateRegisters.de.de = swap;
+  swap = mainRegisters.hl.hl;
+  mainRegisters.hl.hl = alternateRegisters.hl.hl;
+  alternateRegisters.hl.hl = swap;
+}
 
 void Z80::JP_C_word(void)
 {
@@ -1417,7 +1727,15 @@ void Z80::IN_A_iNN(void){}
 void Z80::CALL_C_word(void){}
 void Z80::DD(void){}
 void Z80::SBC_A_byte(void){}
-void Z80::RST_18(void){}
+
+void Z80::RST_18(void)
+{
+  TRACE("RST_18");
+  memory->WriteByte(--indexRegisters.sp, ((PC & 0xFF00) >> 8));
+  memory->WriteByte(--indexRegisters.sp, PC & 0xFF);
+  PC = 0x0018;
+}
+
 void Z80::RET_PO(void){}
 
 void Z80::POP_HL(void)
@@ -1471,8 +1789,21 @@ void Z80::PUSH_HL(void)
 	memory->WriteByte(--indexRegisters.sp, mainRegisters.hl.l);
 }
 
-void Z80::AND_byte(void){}
-void Z80::RST_20(void){}
+void Z80::AND_byte(void)
+{
+  TRACE("AND_byte");
+  mainRegisters.af.a &= memory->ReadByte(PC++);
+  mainRegisters.af.f = flagTable[mainRegisters.af.a] | HALF_CARRY_BIT;
+}
+
+void Z80::RST_20(void)
+{
+  TRACE("RST_20");
+  memory->WriteByte(--indexRegisters.sp, ((PC & 0xFF00) >> 8));
+  memory->WriteByte(--indexRegisters.sp, PC & 0xFF);
+  PC = 0x0020;
+}
+
 void Z80::RET_PE(void){}
 
 void Z80::JP_iHL(void)
@@ -1503,8 +1834,22 @@ void Z80::JP_PE_word(void)
 void Z80::EX_DE_HL(void){uint16_t de = mainRegisters.de.de; mainRegisters.de.de = mainRegisters.hl.hl; mainRegisters.hl.hl = de;}
 void Z80::CALL_PE_word(void){}
 void Z80::ED(void){}
-void Z80::XOR_byte(void){}
-void Z80::RST_28(void){}
+
+void Z80::XOR_byte(void)
+{
+  TRACE("XOR_byte");
+  mainRegisters.af.a ^= memory->ReadByte(PC++);
+  mainRegisters.af.f = flagTable[mainRegisters.af.a];
+}
+
+void Z80::RST_28(void)
+{
+  TRACE("RST_28");
+  memory->WriteByte(--indexRegisters.sp, ((PC & 0xFF00) >> 8));
+  memory->WriteByte(--indexRegisters.sp, PC & 0xFF);
+  PC = 0x0028;
+}
+
 void Z80::RET_P(void){}
 
 void Z80::POP_AF(void)
@@ -1545,8 +1890,21 @@ void Z80::PUSH_AF(void)
 	memory->WriteByte(--indexRegisters.sp, mainRegisters.af.f);
 }
 
-void Z80::OR_byte(void){}
-void Z80::RST_30(void){}
+void Z80::OR_byte(void)
+{
+  TRACE("OR_byte");
+  mainRegisters.af.a |= memory->ReadByte(PC++);
+  mainRegisters.af.f = flagTable[mainRegisters.af.a];
+}
+
+void Z80::RST_30(void)
+{
+  TRACE("RST_30");
+  memory->WriteByte(--indexRegisters.sp, ((PC & 0xFF00) >> 8));
+  memory->WriteByte(--indexRegisters.sp, PC & 0xFF);
+  PC = 0x0030;
+}
+
 void Z80::RET_M(void){}
 
 void Z80::LD_SP_HL(void)
@@ -1578,4 +1936,11 @@ void Z80::EI(void){}
 void Z80::CALL_M_word(void){}
 void Z80::FD(void){}
 void Z80::CP_byte(void){}
-void Z80::RST_38(void){}
+
+void Z80::RST_38(void)
+{
+  TRACE("RST_38");
+  memory->WriteByte(--indexRegisters.sp, ((PC & 0xFF00) >> 8));
+  memory->WriteByte(--indexRegisters.sp, PC & 0xFF);
+  PC = 0x0038;
+}
