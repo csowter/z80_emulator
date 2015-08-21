@@ -1052,7 +1052,12 @@ void Z80::LD_iHL_byte(void)
 	memory->WriteByte(mainRegisters.hl.hl, memory->ReadByte(PC++));
 }
 
-void Z80::SCF(void){}
+void Z80::SCF(void)
+{
+  TRACE("SCF");
+  mainRegisters.af.f &= ~(HALF_CARRY_BIT | SUBTRACT_BIT);
+  mainRegisters.af.f |= CARRY_BIT;
+}
 
 void Z80::JR_C(void)
 {
@@ -2358,70 +2363,407 @@ void Z80::BIT_7_H(void){}
 void Z80::BIT_7_L(void){}
 void Z80::BIT_7_iHL(void){}
 void Z80::BIT_7_A(void){}
-void Z80::RES_0_B(void){}
-void Z80::RES_0_C(void){}
-void Z80::RES_0_D(void){}
-void Z80::RES_0_E(void){}
-void Z80::RES_0_H(void){}
-void Z80::RES_0_L(void){}
-void Z80::RES_0_iHL(void){}
-void Z80::RES_0_A(void){}
-void Z80::RES_1_B(void){}
-void Z80::RES_1_C(void){}
-void Z80::RES_1_D(void){}
-void Z80::RES_1_E(void){}
-void Z80::RES_1_H(void){}
-void Z80::RES_1_L(void){}
-void Z80::RES_1_iHL(void){}
-void Z80::RES_1_A(void){}
-void Z80::RES_2_B(void){}
-void Z80::RES_2_C(void){}
-void Z80::RES_2_D(void){}
-void Z80::RES_2_E(void){}
-void Z80::RES_2_H(void){}
-void Z80::RES_2_L(void){}
-void Z80::RES_2_iHL(void){}
-void Z80::RES_2_A(void){}
-void Z80::RES_3_B(void){}
-void Z80::RES_3_C(void){}
-void Z80::RES_3_D(void){}
-void Z80::RES_3_E(void){}
-void Z80::RES_3_H(void){}
-void Z80::RES_3_L(void){}
-void Z80::RES_3_iHL(void){}
-void Z80::RES_3_A(void){}
-void Z80::RES_4_B(void){}
-void Z80::RES_4_C(void){}
-void Z80::RES_4_D(void){}
-void Z80::RES_4_E(void){}
-void Z80::RES_4_H(void){}
-void Z80::RES_4_L(void){}
-void Z80::RES_4_iHL(void){}
-void Z80::RES_4_A(void){}
-void Z80::RES_5_B(void){}
-void Z80::RES_5_C(void){}
-void Z80::RES_5_D(void){}
-void Z80::RES_5_E(void){}
-void Z80::RES_5_H(void){}
-void Z80::RES_5_L(void){}
-void Z80::RES_5_iHL(void){}
-void Z80::RES_5_A(void){}
-void Z80::RES_6_B(void){}
-void Z80::RES_6_C(void){}
-void Z80::RES_6_D(void){}
-void Z80::RES_6_E(void){}
-void Z80::RES_6_H(void){}
-void Z80::RES_6_L(void){}
-void Z80::RES_6_iHL(void){}
-void Z80::RES_6_A(void){}
-void Z80::RES_7_B(void){}
-void Z80::RES_7_C(void){}
-void Z80::RES_7_D(void){}
-void Z80::RES_7_E(void){}
-void Z80::RES_7_H(void){}
-void Z80::RES_7_L(void){}
-void Z80::RES_7_iHL(void){}
-void Z80::RES_7_A(void){}
+
+void Z80::RES_0_B(void)
+{
+  TRACE("RES_0_B");
+  mainRegisters.bc.b &= ~BIT_0;
+}
+
+void Z80::RES_0_C(void)
+{
+  TRACE("RES_0_C");
+  mainRegisters.bc.c &= ~BIT_0;
+}
+
+void Z80::RES_0_D(void)
+{
+  TRACE("RES_0_D");
+  mainRegisters.de.d &= ~BIT_0;
+}
+
+void Z80::RES_0_E(void)
+{
+  TRACE("RES_0_E");
+  mainRegisters.de.e &= ~BIT_0;
+}
+
+void Z80::RES_0_H(void)
+{
+  TRACE("RES_0_H");
+  mainRegisters.hl.h &= ~BIT_0;
+}
+
+void Z80::RES_0_L(void)
+{
+  TRACE("RES_0_L");
+  mainRegisters.hl.l &= ~BIT_0;
+}
+
+void Z80::RES_0_iHL(void)
+{
+  TRACE("RES_0_iHL");
+  uint8_t value = memory->ReadByte(mainRegisters.hl.hl);
+  value &= ~BIT_0;
+  memory->WriteByte(mainRegisters.hl.hl, value);
+}
+
+void Z80::RES_0_A(void)
+{
+  TRACE("RES_0_A");
+  mainRegisters.af.a &= ~BIT_0;
+}
+
+void Z80::RES_1_B(void)
+{
+  TRACE("RES_1_B");
+  mainRegisters.bc.b &= ~BIT_1;
+}
+
+void Z80::RES_1_C(void)
+{
+  TRACE("RES_1_C");
+  mainRegisters.bc.c &= ~BIT_1;
+}
+
+void Z80::RES_1_D(void)
+{
+  TRACE("RES_1_D");
+  mainRegisters.de.d &= ~BIT_1;
+}
+
+void Z80::RES_1_E(void)
+{
+  TRACE("RES_1_E");
+  mainRegisters.de.e &= ~BIT_1;
+}
+
+void Z80::RES_1_H(void)
+{
+  TRACE("RES_1_H");
+  mainRegisters.hl.h &= ~BIT_1;
+}
+
+void Z80::RES_1_L(void)
+{
+  TRACE("RES_1_L");
+  mainRegisters.hl.l &= ~BIT_1;
+}
+
+void Z80::RES_1_iHL(void)
+{
+  TRACE("RES_1_iHL");
+  uint8_t value = memory->ReadByte(mainRegisters.hl.hl);
+  value &= ~BIT_1;
+  memory->WriteByte(mainRegisters.hl.hl, value);
+}
+
+void Z80::RES_1_A(void)
+{
+  TRACE("RES_1_A");
+  mainRegisters.af.a &= ~BIT_1;
+}
+
+void Z80::RES_2_B(void)
+{
+  TRACE("RES_2_B");
+  mainRegisters.bc.b &= ~BIT_2;
+}
+
+void Z80::RES_2_C(void)
+{
+  TRACE("RES_2_C");
+  mainRegisters.bc.c &= ~BIT_2;
+}
+
+void Z80::RES_2_D(void)
+{
+  TRACE("RES_2_D");
+  mainRegisters.de.d &= ~BIT_2;
+}
+
+void Z80::RES_2_E(void)
+{
+  TRACE("RES_2_E");
+  mainRegisters.de.e &= ~BIT_2;
+}
+
+void Z80::RES_2_H(void)
+{
+  TRACE("RES_2_H");
+  mainRegisters.hl.h &= ~BIT_2;
+}
+
+void Z80::RES_2_L(void)
+{
+  TRACE("RES_2_L");
+  mainRegisters.hl.l &= ~BIT_2;
+}
+
+void Z80::RES_2_iHL(void)
+{
+  TRACE("RES_2_iHL");
+  uint8_t value = memory->ReadByte(mainRegisters.hl.hl);
+  value &= ~BIT_2;
+  memory->WriteByte(mainRegisters.hl.hl, value);
+}
+
+void Z80::RES_2_A(void)
+{
+  TRACE("RES_2_A");
+  mainRegisters.af.a &= ~BIT_2;
+}
+
+void Z80::RES_3_B(void)
+{
+  TRACE("RES_3_B");
+  mainRegisters.bc.b &= ~BIT_3;
+}
+
+void Z80::RES_3_C(void)
+{
+  TRACE("RES_3_C");
+  mainRegisters.bc.c &= ~BIT_3;
+}
+
+void Z80::RES_3_D(void)
+{
+  TRACE("RES_3_D");
+  mainRegisters.de.d &= ~BIT_3;
+}
+
+void Z80::RES_3_E(void)
+{
+  TRACE("RES_3_E");
+  mainRegisters.de.e &= ~BIT_3;
+}
+
+void Z80::RES_3_H(void)
+{
+  TRACE("RES_3_H");
+  mainRegisters.hl.h &= ~BIT_3;
+}
+
+void Z80::RES_3_L(void)
+{
+  TRACE("RES_3_L");
+  mainRegisters.hl.l &= ~BIT_3;
+}
+
+void Z80::RES_3_iHL(void)
+{
+  TRACE("RES_3_iHL");
+  uint8_t value = memory->ReadByte(mainRegisters.hl.hl);
+  value &= ~BIT_3;
+  memory->WriteByte(mainRegisters.hl.hl, value);
+}
+
+void Z80::RES_3_A(void)
+{
+  TRACE("RES_3_A");
+  mainRegisters.af.a &= ~BIT_3;
+}
+
+void Z80::RES_4_B(void)
+{
+  TRACE("RES_4_B");
+  mainRegisters.bc.b &= ~BIT_4;
+}
+
+void Z80::RES_4_C(void)
+{
+  TRACE("RES_4_C");
+  mainRegisters.bc.c &= ~BIT_4;
+}
+
+void Z80::RES_4_D(void)
+{
+  TRACE("RES_4_D");
+  mainRegisters.de.d &= ~BIT_4;
+}
+
+void Z80::RES_4_E(void)
+{
+  TRACE("RES_4_E");
+  mainRegisters.de.e &= ~BIT_4;
+}
+
+void Z80::RES_4_H(void)
+{
+  TRACE("RES_4_H");
+  mainRegisters.hl.h &= ~BIT_4;
+}
+
+void Z80::RES_4_L(void)
+{
+  TRACE("RES_4_L");
+  mainRegisters.hl.l &= ~BIT_4;
+}
+
+void Z80::RES_4_iHL(void)
+{
+  TRACE("RES_4_iHL");
+  uint8_t value = memory->ReadByte(mainRegisters.hl.hl);
+  value &= ~BIT_4;
+  memory->WriteByte(mainRegisters.hl.hl, value);
+}
+
+void Z80::RES_4_A(void)
+{
+  TRACE("RES_4_A");
+  mainRegisters.af.a &= ~BIT_4;
+}
+
+void Z80::RES_5_B(void)
+{
+  TRACE("RES_5_B");
+  mainRegisters.bc.b &= ~BIT_5;
+}
+
+void Z80::RES_5_C(void)
+{
+  TRACE("RES_5_C");
+  mainRegisters.bc.c &= ~BIT_5;
+}
+
+void Z80::RES_5_D(void)
+{
+  TRACE("RES_5_D");
+  mainRegisters.de.d &= ~BIT_5;
+}
+
+void Z80::RES_5_E(void)
+{
+  TRACE("RES_5_E");
+  mainRegisters.de.e &= ~BIT_5;
+}
+
+void Z80::RES_5_H(void)
+{
+  TRACE("RES_5_H");
+  mainRegisters.hl.h &= ~BIT_5;
+}
+
+void Z80::RES_5_L(void)
+{
+  TRACE("RES_5_L");
+  mainRegisters.hl.l &= ~BIT_5;
+}
+
+void Z80::RES_5_iHL(void)
+{
+  TRACE("RES_5_iHL");
+  uint8_t value = memory->ReadByte(mainRegisters.hl.hl);
+  value &= ~BIT_5;
+  memory->WriteByte(mainRegisters.hl.hl, value);
+}
+
+void Z80::RES_5_A(void)
+{
+  TRACE("RES_5_A");
+  mainRegisters.af.a &= ~BIT_5;
+}
+
+void Z80::RES_6_B(void)
+{
+  TRACE("RES_6_B");
+  mainRegisters.bc.b &= ~BIT_6;
+}
+
+void Z80::RES_6_C(void)
+{
+  TRACE("RES_6_C");
+  mainRegisters.bc.c &= ~BIT_6;
+}
+
+void Z80::RES_6_D(void)
+{
+  TRACE("RES_6_D");
+  mainRegisters.de.d &= ~BIT_6;
+}
+
+void Z80::RES_6_E(void)
+{
+  TRACE("RES_6_E");
+  mainRegisters.de.e &= ~BIT_6;
+}
+
+void Z80::RES_6_H(void)
+{
+  TRACE("RES_6_H");
+  mainRegisters.hl.h &= ~BIT_6;
+}
+
+void Z80::RES_6_L(void)
+{
+  TRACE("RES_6_L");
+  mainRegisters.hl.l &= ~BIT_6;
+}
+
+void Z80::RES_6_iHL(void)
+{
+  TRACE("RES_6_iHL");
+  uint8_t value = memory->ReadByte(mainRegisters.hl.hl);
+  value &= ~BIT_6;
+  memory->WriteByte(mainRegisters.hl.hl, value);
+}
+
+void Z80::RES_6_A(void)
+{
+  TRACE("RES_6_A");
+  mainRegisters.af.a &= ~BIT_6;
+}
+
+void Z80::RES_7_B(void)
+{
+  TRACE("RES_7_B");
+  mainRegisters.bc.b &= ~BIT_7;
+}
+
+void Z80::RES_7_C(void)
+{
+  TRACE("RES_7_C");
+  mainRegisters.bc.c &= ~BIT_7;
+}
+
+void Z80::RES_7_D(void)
+{
+  TRACE("RES_7_D");
+  mainRegisters.de.d &= ~BIT_7;
+}
+
+void Z80::RES_7_E(void)
+{
+  TRACE("RES_7_E");
+  mainRegisters.de.e &= ~BIT_7;
+}
+
+void Z80::RES_7_H(void)
+{
+  TRACE("RES_7_H");
+  mainRegisters.hl.h &= ~BIT_7;
+}
+
+void Z80::RES_7_L(void)
+{
+  TRACE("RES_7_L");
+  mainRegisters.hl.l &= ~BIT_7;
+}
+
+void Z80::RES_7_iHL(void)
+{
+  TRACE("RES_7_iHL");
+  uint8_t value = memory->ReadByte(mainRegisters.hl.hl);
+  value &= ~BIT_7;
+  memory->WriteByte(mainRegisters.hl.hl, value);
+}
+
+void Z80::RES_7_A(void)
+{
+  TRACE("RES_7_A");
+  mainRegisters.af.a &= ~BIT_7;
+}
+
 void Z80::SET_0_B(void){}
 void Z80::SET_0_C(void){}
 void Z80::SET_0_D(void){}
