@@ -1126,7 +1126,17 @@ void Z80::LD_A_byte(void)
 	mainRegisters.af.a = memory->ReadByte(PC++);
 }
 
-void Z80::CCF(void){}
+void Z80::CCF(void)
+{
+  TRACE("CCF");
+  
+  uint8_t temp = mainRegisters.af.f;
+  temp &= CARRY_BIT;
+
+  mainRegisters.af.f &= ~(HALF_CARRY_BIT | CARRY_BIT);
+  mainRegisters.af.f |= (temp << 4);
+  mainRegisters.af.f |= ((~temp) & CARRY_BIT);
+}
 
 void Z80::LD_B_B(void)
 {
@@ -2099,7 +2109,14 @@ void Z80::JP_PE_word(void)
 	}
 }
 
-void Z80::EX_DE_HL(void){uint16_t de = mainRegisters.de.de; mainRegisters.de.de = mainRegisters.hl.hl; mainRegisters.hl.hl = de;}
+void Z80::EX_DE_HL(void)
+{
+  TRACE("EX_DE_HL");
+  uint16_t de = mainRegisters.de.de;
+  mainRegisters.de.de = mainRegisters.hl.hl;
+  mainRegisters.hl.hl = de;
+}
+
 void Z80::CALL_PE_word(void){}
 void Z80::ED(void){}
 
