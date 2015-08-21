@@ -2235,14 +2235,64 @@ void Z80::RST_38(void)
   PC = 0x0038;
 }
 
-void Z80::RLC_B(void){}
-void Z80::RLC_C(void){}
-void Z80::RLC_D(void){}
-void Z80::RLC_E(void){}
-void Z80::RLC_H(void){}
-void Z80::RLC_L(void){}
-void Z80::RLC_iHL(void){}
-void Z80::RLC_A(void){}
+void Z80::RLC_B(void)
+{
+  TRACE("RLC_B");
+  mainRegisters.bc.b = (mainRegisters.bc.b << 1) | (mainRegisters.bc.b >> 7);
+  mainRegisters.af.f = flagTable[mainRegisters.bc.b] | (mainRegisters.bc.b & CARRY_BIT);
+}
+
+void Z80::RLC_C(void)
+{
+  TRACE("RLC_C");
+  mainRegisters.bc.c = (mainRegisters.bc.c << 1) | (mainRegisters.bc.c >> 7);
+  mainRegisters.af.f = flagTable[mainRegisters.bc.c] | (mainRegisters.bc.c & CARRY_BIT);
+}
+
+void Z80::RLC_D(void)
+{
+  TRACE("RLC_D");
+  mainRegisters.de.d = (mainRegisters.de.d << 1) | (mainRegisters.de.d >> 7);
+  mainRegisters.af.f = flagTable[mainRegisters.de.d] | (mainRegisters.de.d & CARRY_BIT);
+}
+
+void Z80::RLC_E(void)
+{
+  TRACE("RLC_E");
+  mainRegisters.de.e = (mainRegisters.de.e << 1) | (mainRegisters.de.e >> 7);
+  mainRegisters.af.f = flagTable[mainRegisters.de.e] | (mainRegisters.de.e & CARRY_BIT);
+}
+
+void Z80::RLC_H(void)
+{
+  TRACE("RLC_H");
+  mainRegisters.hl.h = (mainRegisters.hl.h << 1) | (mainRegisters.hl.h >> 7);
+  mainRegisters.af.f = flagTable[mainRegisters.hl.h] | (mainRegisters.hl.h & CARRY_BIT);
+}
+
+void Z80::RLC_L(void)
+{
+  TRACE("RLC_L");
+  mainRegisters.hl.l = (mainRegisters.hl.l << 1) | (mainRegisters.hl.l >> 7);
+  mainRegisters.af.f = flagTable[mainRegisters.hl.l] | (mainRegisters.hl.l & CARRY_BIT);
+}
+
+void Z80::RLC_iHL(void)
+{
+  TRACE("RLC_iHL");
+  uint8_t value = memory->ReadByte(mainRegisters.hl.hl);
+  value = (value << 1) | (value >> 7);
+  mainRegisters.af.f = flagTable[value] | (value & CARRY_BIT);
+  memory->WriteByte(mainRegisters.hl.hl, value);
+}
+
+void Z80::RLC_A(void)
+{
+  TRACE("RLC_A");
+  mainRegisters.af.a = (mainRegisters.af.a << 1) | (mainRegisters.af.a >> 7);
+  mainRegisters.af.f = flagTable[mainRegisters.af.a] | (mainRegisters.af.a & CARRY_BIT);
+}
+
 void Z80::RRC_B(void){}
 void Z80::RRC_C(void){}
 void Z80::RRC_D(void){}
