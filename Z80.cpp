@@ -2764,67 +2764,402 @@ void Z80::RES_7_A(void)
   mainRegisters.af.a &= ~BIT_7;
 }
 
-void Z80::SET_0_B(void){}
-void Z80::SET_0_C(void){}
-void Z80::SET_0_D(void){}
-void Z80::SET_0_E(void){}
-void Z80::SET_0_H(void){}
-void Z80::SET_0_L(void){}
-void Z80::SET_0_iHL(void){}
-void Z80::SET_0_A(void){}
-void Z80::SET_1_B(void){}
-void Z80::SET_1_C(void){}
-void Z80::SET_1_D(void){}
-void Z80::SET_1_E(void){}
-void Z80::SET_1_H(void){}
-void Z80::SET_1_L(void){}
-void Z80::SET_1_iHL(void){}
-void Z80::SET_1_A(void){}
-void Z80::SET_2_B(void){}
-void Z80::SET_2_C(void){}
-void Z80::SET_2_D(void){}
-void Z80::SET_2_E(void){}
-void Z80::SET_2_H(void){}
-void Z80::SET_2_L(void){}
-void Z80::SET_2_iHL(void){}
-void Z80::SET_2_A(void){}
-void Z80::SET_3_B(void){}
-void Z80::SET_3_C(void){}
-void Z80::SET_3_D(void){}
-void Z80::SET_3_E(void){}
-void Z80::SET_3_H(void){}
-void Z80::SET_3_L(void){}
-void Z80::SET_3_iHL(void){}
-void Z80::SET_3_A(void){}
-void Z80::SET_4_B(void){}
-void Z80::SET_4_C(void){}
-void Z80::SET_4_D(void){}
-void Z80::SET_4_E(void){}
-void Z80::SET_4_H(void){}
-void Z80::SET_4_L(void){}
-void Z80::SET_4_iHL(void){}
-void Z80::SET_4_A(void){}
-void Z80::SET_5_B(void){}
-void Z80::SET_5_C(void){}
-void Z80::SET_5_D(void){}
-void Z80::SET_5_E(void){}
-void Z80::SET_5_H(void){}
-void Z80::SET_5_L(void){}
-void Z80::SET_5_iHL(void){}
-void Z80::SET_5_A(void){}
-void Z80::SET_6_B(void){}
-void Z80::SET_6_C(void){}
-void Z80::SET_6_D(void){}
-void Z80::SET_6_E(void){}
-void Z80::SET_6_H(void){}
-void Z80::SET_6_L(void){}
-void Z80::SET_6_iHL(void){}
-void Z80::SET_6_A(void){}
-void Z80::SET_7_B(void){}
-void Z80::SET_7_C(void){}
-void Z80::SET_7_D(void){}
-void Z80::SET_7_E(void){}
-void Z80::SET_7_H(void){}
-void Z80::SET_7_L(void){}
-void Z80::SET_7_iHL(void){}
-void Z80::SET_7_A(void){}
+void Z80::SET_0_B(void)
+{
+  TRACE("SET_0_B");
+  mainRegisters.bc.b |= BIT_0;
+}
+
+void Z80::SET_0_C(void)
+{
+  TRACE("SET_0_C");
+  mainRegisters.bc.c |= BIT_0;
+}
+
+void Z80::SET_0_D(void)
+{
+  TRACE("SET_0_D");
+  mainRegisters.de.d |= BIT_0;
+}
+
+void Z80::SET_0_E(void)
+{
+  TRACE("SET_0_E");
+  mainRegisters.de.e |= BIT_0;
+}
+
+void Z80::SET_0_H(void)
+{
+  TRACE("SET_0_H");
+  mainRegisters.hl.h |= BIT_0;
+}
+
+void Z80::SET_0_L(void)
+{
+  TRACE("SET_0_L");
+  mainRegisters.hl.l |= BIT_0;
+}
+
+void Z80::SET_0_iHL(void)
+{
+  TRACE("SET_0_iHL");
+  uint8_t value = memory->ReadByte(mainRegisters.hl.hl);
+  value |= BIT_0;
+  memory->WriteByte(mainRegisters.hl.hl, value);
+}
+
+void Z80::SET_0_A(void)
+{
+  TRACE("SET_0_A");
+  mainRegisters.af.a |= BIT_0;
+}
+
+void Z80::SET_1_B(void)
+{
+  TRACE("SET_1_B");
+  mainRegisters.bc.b |= BIT_1;
+}
+
+void Z80::SET_1_C(void)
+{
+  TRACE("SET_1_C");
+  mainRegisters.bc.c |= BIT_1;
+}
+
+void Z80::SET_1_D(void)
+{
+  TRACE("SET_1_D");
+  mainRegisters.de.d |= BIT_1;
+}
+
+void Z80::SET_1_E(void)
+{
+  TRACE("SET_1_E");
+  mainRegisters.de.e |= BIT_1;
+}
+
+void Z80::SET_1_H(void)
+{
+  TRACE("SET_1_H");
+  mainRegisters.hl.h |= BIT_1;
+}
+
+void Z80::SET_1_L(void)
+{
+  TRACE("SET_1_L");
+  mainRegisters.hl.l |= BIT_1;
+}
+
+void Z80::SET_1_iHL(void)
+{
+  TRACE("SET_1_iHL");
+  uint8_t value = memory->ReadByte(mainRegisters.hl.hl);
+  value |= BIT_1;
+  memory->WriteByte(mainRegisters.hl.hl, value);
+}
+
+void Z80::SET_1_A(void)
+{
+  TRACE("SET_1_A");
+  mainRegisters.af.a |= BIT_1;
+}
+
+void Z80::SET_2_B(void)
+{
+  TRACE("SET_2_B");
+  mainRegisters.bc.b |= BIT_2;
+}
+
+void Z80::SET_2_C(void)
+{
+  TRACE("SET_2_C");
+  mainRegisters.bc.c |= BIT_2;
+}
+
+void Z80::SET_2_D(void)
+{
+  TRACE("SET_2_D");
+  mainRegisters.de.d |= BIT_2;
+}
+
+void Z80::SET_2_E(void)
+{
+  TRACE("SET_2_E");
+  mainRegisters.de.e |= BIT_2;
+}
+
+void Z80::SET_2_H(void)
+{
+  TRACE("SET_2_H");
+  mainRegisters.hl.h |= BIT_2;
+}
+
+void Z80::SET_2_L(void)
+{
+  TRACE("SET_2_L");
+  mainRegisters.hl.l |= BIT_2;
+}
+
+void Z80::SET_2_iHL(void)
+{
+  TRACE("SET_2_iHL");
+  uint8_t value = memory->ReadByte(mainRegisters.hl.hl);
+  value |= BIT_2;
+  memory->WriteByte(mainRegisters.hl.hl, value);
+}
+
+void Z80::SET_2_A(void)
+{
+  TRACE("SET_2_A");
+  mainRegisters.af.a |= BIT_2;
+}
+
+void Z80::SET_3_B(void)
+{
+  TRACE("SET_3_B");
+  mainRegisters.bc.b |= BIT_3;
+}
+
+void Z80::SET_3_C(void)
+{
+  TRACE("SET_3_C");
+  mainRegisters.bc.c |= BIT_3;
+}
+
+void Z80::SET_3_D(void)
+{
+  TRACE("SET_3_D");
+  mainRegisters.de.d |= BIT_3;
+}
+
+void Z80::SET_3_E(void)
+{
+  TRACE("SET_3_E");
+  mainRegisters.de.e |= BIT_3;
+}
+
+void Z80::SET_3_H(void)
+{
+  TRACE("SET_3_H");
+  mainRegisters.hl.h |= BIT_3;
+}
+
+void Z80::SET_3_L(void)
+{
+  TRACE("SET_3_L");
+  mainRegisters.hl.l |= BIT_3;
+}
+
+void Z80::SET_3_iHL(void)
+{
+  TRACE("SET_3_iHL");
+  uint8_t value = memory->ReadByte(mainRegisters.hl.hl);
+  value |= BIT_3;
+  memory->WriteByte(mainRegisters.hl.hl, value);
+}
+
+void Z80::SET_3_A(void)
+{
+  TRACE("SET_3_A");
+  mainRegisters.af.a |= BIT_3;
+}
+
+void Z80::SET_4_B(void)
+{
+  TRACE("SET_4_B");
+  mainRegisters.bc.b |= BIT_4;
+}
+
+void Z80::SET_4_C(void)
+{
+  TRACE("SET_4_C");
+  mainRegisters.bc.c |= BIT_4;
+}
+
+void Z80::SET_4_D(void)
+{
+  TRACE("SET_4_D");
+  mainRegisters.de.d |= BIT_4;
+}
+
+void Z80::SET_4_E(void)
+{
+  TRACE("SET_4_E");
+  mainRegisters.de.e |= BIT_4;
+}
+
+void Z80::SET_4_H(void)
+{
+  TRACE("SET_4_H");
+  mainRegisters.hl.h |= BIT_4;
+}
+
+void Z80::SET_4_L(void)
+{
+  TRACE("SET_4_L");
+  mainRegisters.hl.l |= BIT_4;
+}
+
+void Z80::SET_4_iHL(void)
+{
+  TRACE("SET_4_iHL");
+  uint8_t value = memory->ReadByte(mainRegisters.hl.hl);
+  value |= BIT_4;
+  memory->WriteByte(mainRegisters.hl.hl, value);
+}
+
+void Z80::SET_4_A(void)
+{
+  TRACE("SET_4_A");
+  mainRegisters.af.a |= BIT_4;
+}
+
+void Z80::SET_5_B(void)
+{
+  TRACE("SET_5_B");
+  mainRegisters.bc.b |= BIT_5;
+}
+
+void Z80::SET_5_C(void)
+{
+  TRACE("SET_5_C");
+  mainRegisters.bc.c |= BIT_5;
+}
+
+void Z80::SET_5_D(void)
+{
+  TRACE("SET_5_D");
+  mainRegisters.de.d |= BIT_5;
+}
+
+void Z80::SET_5_E(void)
+{
+  TRACE("SET_5_E");
+  mainRegisters.de.e |= BIT_5;
+}
+
+void Z80::SET_5_H(void)
+{
+  TRACE("SET_5_H");
+  mainRegisters.hl.h |= BIT_5;
+}
+
+void Z80::SET_5_L(void)
+{
+  TRACE("SET_5_L");
+  mainRegisters.hl.l |= BIT_5;
+}
+
+void Z80::SET_5_iHL(void)
+{
+  TRACE("SET_5_iHL");
+  uint8_t value = memory->ReadByte(mainRegisters.hl.hl);
+  value |= BIT_5;
+  memory->WriteByte(mainRegisters.hl.hl, value);
+}
+
+void Z80::SET_5_A(void)
+{
+  TRACE("SET_5_A");
+  mainRegisters.af.a |= BIT_5;
+}
+
+void Z80::SET_6_B(void)
+{
+  TRACE("SET_6_B");
+  mainRegisters.bc.b |= BIT_6;
+}
+
+void Z80::SET_6_C(void)
+{
+  TRACE("SET_6_C");
+  mainRegisters.bc.c |= BIT_6;
+}
+
+void Z80::SET_6_D(void)
+{
+  TRACE("SET_6_D");
+  mainRegisters.de.d |= BIT_6;
+}
+
+void Z80::SET_6_E(void)
+{
+  TRACE("SET_6_E");
+  mainRegisters.de.e |= BIT_6;
+}
+
+void Z80::SET_6_H(void)
+{
+  TRACE("SET_6_H");
+  mainRegisters.hl.h |= BIT_6;
+}
+
+void Z80::SET_6_L(void)
+{
+  TRACE("SET_6_L");
+  mainRegisters.hl.l |= BIT_6;
+}
+
+void Z80::SET_6_iHL(void)
+{
+  TRACE("SET_6_iHL");
+  uint8_t value = memory->ReadByte(mainRegisters.hl.hl);
+  value |= BIT_6;
+  memory->WriteByte(mainRegisters.hl.hl, value);
+}
+
+void Z80::SET_6_A(void)
+{
+  TRACE("SET_6_A");
+  mainRegisters.af.a |= BIT_6;
+}
+
+void Z80::SET_7_B(void)
+{
+  TRACE("SET_7_B");
+  mainRegisters.bc.b |= BIT_7;
+}
+
+void Z80::SET_7_C(void)
+{
+  TRACE("SET_7_C");
+  mainRegisters.bc.c |= BIT_7;
+}
+
+void Z80::SET_7_D(void)
+{
+  TRACE("SET_7_D");
+  mainRegisters.de.d |= BIT_7;
+}
+
+void Z80::SET_7_E(void)
+{
+  TRACE("SET_7_E");
+  mainRegisters.de.e |= BIT_7;
+}
+
+void Z80::SET_7_H(void)
+{
+  TRACE("SET_7_H");
+  mainRegisters.hl.h |= BIT_7;
+}
+
+void Z80::SET_7_L(void)
+{
+  TRACE("SET_7_L");
+  mainRegisters.hl.l |= BIT_7;
+}
+
+void Z80::SET_7_iHL(void)
+{
+  TRACE("SET_7_iHL");
+  uint8_t value = memory->ReadByte(mainRegisters.hl.hl);
+  value |= BIT_7;
+  memory->WriteByte(mainRegisters.hl.hl, value);
+}
+
+void Z80::SET_7_A(void)
+{
+  TRACE("SET_7_A");
+  mainRegisters.af.a |= BIT_7;
+}
