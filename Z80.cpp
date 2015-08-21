@@ -13,7 +13,7 @@
 #endif
 
 Z80::Z80(MemoryInterface *memoryInterface, IOInterface *ioInterface)
-  : mainRegisters(), alternateRegisters(), indexRegisters(), otherRegisters(), PC(0), memory(memoryInterface), io(ioInterface), Op(new fptr[OpCodes::NUMBER_OF_OPCODES]), flagTable(new uint8_t[256])
+  : mainRegisters(), alternateRegisters(), indexRegisters(), otherRegisters(), PC(0), memory(memoryInterface), io(ioInterface), Op(new fptr[OpCodes::NUMBER_OF_OPCODES]), CBOp(new fptr[CB_OpCodes::NUMBER_OF_OPCODES]), flagTable(new uint8_t[256])
 {
   Op[OpCodes::NOP] = &Z80::NOP;               
   Op[OpCodes::LD_BC_word] = &Z80::LD_BC_word;        
@@ -272,6 +272,264 @@ Z80::Z80(MemoryInterface *memoryInterface, IOInterface *ioInterface)
   Op[OpCodes::CP_byte] = &Z80::CP_byte;
   Op[OpCodes::RST_38] = &Z80::RST_38; 
 
+  //CB Opcodes
+  CBOp[CB_OpCodes::RLC_B] = &Z80::RLC_B;
+  CBOp[CB_OpCodes::RLC_C] = &Z80::RLC_C;
+  CBOp[CB_OpCodes::RLC_D] = &Z80::RLC_D;
+  CBOp[CB_OpCodes::RLC_E] = &Z80::RLC_E;
+  CBOp[CB_OpCodes::RLC_H] = &Z80::RLC_H;
+  CBOp[CB_OpCodes::RLC_L] = &Z80::RLC_L;
+  CBOp[CB_OpCodes::RLC_iHL] = &Z80::RLC_iHL;
+  CBOp[CB_OpCodes::RLC_A] = &Z80::RLC_A;
+  CBOp[CB_OpCodes::RRC_B] = &Z80::RRC_B;
+  CBOp[CB_OpCodes::RRC_C] = &Z80::RRC_C;
+  CBOp[CB_OpCodes::RRC_D] = &Z80::RRC_D;
+  CBOp[CB_OpCodes::RRC_E] = &Z80::RRC_E;
+  CBOp[CB_OpCodes::RRC_H] = &Z80::RRC_H;
+  CBOp[CB_OpCodes::RRC_L] = &Z80::RRC_L;
+  CBOp[CB_OpCodes::RRC_iHL] = &Z80::RRC_iHL;
+  CBOp[CB_OpCodes::RRC_A] = &Z80::RRC_A;
+  CBOp[CB_OpCodes::RL_B] = &Z80::RL_B;
+  CBOp[CB_OpCodes::RL_C] = &Z80::RL_C;
+  CBOp[CB_OpCodes::RL_D] = &Z80::RL_D;
+  CBOp[CB_OpCodes::RL_E] = &Z80::RL_E;
+  CBOp[CB_OpCodes::RL_H] = &Z80::RL_H;
+  CBOp[CB_OpCodes::RL_L] = &Z80::RL_L;
+  CBOp[CB_OpCodes::RL_iHL] = &Z80::RL_iHL;
+  CBOp[CB_OpCodes::RL_A] = &Z80::RL_A;
+  CBOp[CB_OpCodes::RR_B] = &Z80::RR_B;
+  CBOp[CB_OpCodes::RR_C] = &Z80::RR_C;
+  CBOp[CB_OpCodes::RR_D] = &Z80::RR_D;
+  CBOp[CB_OpCodes::RR_E] = &Z80::RR_E;
+  CBOp[CB_OpCodes::RR_H] = &Z80::RR_H;
+  CBOp[CB_OpCodes::RR_L] = &Z80::RR_L;
+  CBOp[CB_OpCodes::RR_iHL] = &Z80::RR_iHL;
+  CBOp[CB_OpCodes::RR_A] = &Z80::RR_A;
+  CBOp[CB_OpCodes::SLA_B] = &Z80::SLA_B;
+  CBOp[CB_OpCodes::SLA_C] = &Z80::SLA_C;
+  CBOp[CB_OpCodes::SLA_D] = &Z80::SLA_D;
+  CBOp[CB_OpCodes::SLA_E] = &Z80::SLA_E;
+  CBOp[CB_OpCodes::SLA_H] = &Z80::SLA_H;
+  CBOp[CB_OpCodes::SLA_L] = &Z80::SLA_L;
+  CBOp[CB_OpCodes::SLA_iHL] = &Z80::SLA_iHL;
+  CBOp[CB_OpCodes::SLA_A] = &Z80::SLA_A;
+  CBOp[CB_OpCodes::SRA_B] = &Z80::SRA_B;
+  CBOp[CB_OpCodes::SRA_C] = &Z80::SRA_C;
+  CBOp[CB_OpCodes::SRA_D] = &Z80::SRA_D;
+  CBOp[CB_OpCodes::SRA_E] = &Z80::SRA_E;
+  CBOp[CB_OpCodes::SRA_H] = &Z80::SRA_H;
+  CBOp[CB_OpCodes::SRA_L] = &Z80::SRA_L;
+  CBOp[CB_OpCodes::SRA_iHL] = &Z80::SRA_iHL;
+  CBOp[CB_OpCodes::SRA_A] = &Z80::SRA_A;
+  CBOp[CB_OpCodes::SLS_B] = &Z80::SLS_B;
+  CBOp[CB_OpCodes::SLS_C] = &Z80::SLS_C;
+  CBOp[CB_OpCodes::SLS_D] = &Z80::SLS_D;
+  CBOp[CB_OpCodes::SLS_E] = &Z80::SLS_E;
+  CBOp[CB_OpCodes::SLS_H] = &Z80::SLS_H;
+  CBOp[CB_OpCodes::SLS_L] = &Z80::SLS_L;
+  CBOp[CB_OpCodes::SLS_iHL] = &Z80::SLS_iHL;
+  CBOp[CB_OpCodes::SLS_A] = &Z80::SLS_A;
+  CBOp[CB_OpCodes::SRL_B] = &Z80::SRL_B;
+  CBOp[CB_OpCodes::SRL_C] = &Z80::SRL_C;
+  CBOp[CB_OpCodes::SRL_D] = &Z80::SRL_D;
+  CBOp[CB_OpCodes::SRL_E] = &Z80::SRL_E;
+  CBOp[CB_OpCodes::SRL_H] = &Z80::SRL_H;
+  CBOp[CB_OpCodes::SRL_L] = &Z80::SRL_L;
+  CBOp[CB_OpCodes::SRL_iHL] = &Z80::SRL_iHL;
+  CBOp[CB_OpCodes::SRL_A] = &Z80::SRL_A;
+  CBOp[CB_OpCodes::BIT_0_B] = &Z80::BIT_0_B;
+  CBOp[CB_OpCodes::BIT_0_C] = &Z80::BIT_0_C;
+  CBOp[CB_OpCodes::BIT_0_D] = &Z80::BIT_0_D;
+  CBOp[CB_OpCodes::BIT_0_E] = &Z80::BIT_0_E;
+  CBOp[CB_OpCodes::BIT_0_H] = &Z80::BIT_0_H;
+  CBOp[CB_OpCodes::BIT_0_L] = &Z80::BIT_0_L;
+  CBOp[CB_OpCodes::BIT_0_iHL] = &Z80::BIT_0_iHL;
+  CBOp[CB_OpCodes::BIT_0_A] = &Z80::BIT_0_A;
+  CBOp[CB_OpCodes::BIT_1_B] = &Z80::BIT_1_B;
+  CBOp[CB_OpCodes::BIT_1_C] = &Z80::BIT_1_C;
+  CBOp[CB_OpCodes::BIT_1_D] = &Z80::BIT_1_D;
+  CBOp[CB_OpCodes::BIT_1_E] = &Z80::BIT_1_E;
+  CBOp[CB_OpCodes::BIT_1_H] = &Z80::BIT_1_H;
+  CBOp[CB_OpCodes::BIT_1_L] = &Z80::BIT_1_L;
+  CBOp[CB_OpCodes::BIT_1_iHL] = &Z80::BIT_1_iHL;
+  CBOp[CB_OpCodes::BIT_1_A] = &Z80::BIT_1_A;
+  CBOp[CB_OpCodes::BIT_2_B] = &Z80::BIT_2_B;
+  CBOp[CB_OpCodes::BIT_2_C] = &Z80::BIT_2_C;
+  CBOp[CB_OpCodes::BIT_2_D] = &Z80::BIT_2_D;
+  CBOp[CB_OpCodes::BIT_2_E] = &Z80::BIT_2_E;
+  CBOp[CB_OpCodes::BIT_2_H] = &Z80::BIT_2_H;
+  CBOp[CB_OpCodes::BIT_2_L] = &Z80::BIT_2_L;
+  CBOp[CB_OpCodes::BIT_2_iHL] = &Z80::BIT_2_iHL;
+  CBOp[CB_OpCodes::BIT_2_A] = &Z80::BIT_2_A;
+  CBOp[CB_OpCodes::BIT_3_B] = &Z80::BIT_3_B;
+  CBOp[CB_OpCodes::BIT_3_C] = &Z80::BIT_3_C;
+  CBOp[CB_OpCodes::BIT_3_D] = &Z80::BIT_3_D;
+  CBOp[CB_OpCodes::BIT_3_E] = &Z80::BIT_3_E;
+  CBOp[CB_OpCodes::BIT_3_H] = &Z80::BIT_3_H;
+  CBOp[CB_OpCodes::BIT_3_L] = &Z80::BIT_3_L;
+  CBOp[CB_OpCodes::BIT_3_iHL] = &Z80::BIT_3_iHL;
+  CBOp[CB_OpCodes::BIT_3_A] = &Z80::BIT_3_A;
+  CBOp[CB_OpCodes::BIT_4_B] = &Z80::BIT_4_B;
+  CBOp[CB_OpCodes::BIT_4_C] = &Z80::BIT_4_C;
+  CBOp[CB_OpCodes::BIT_4_D] = &Z80::BIT_4_D;
+  CBOp[CB_OpCodes::BIT_4_E] = &Z80::BIT_4_E;
+  CBOp[CB_OpCodes::BIT_4_H] = &Z80::BIT_4_H;
+  CBOp[CB_OpCodes::BIT_4_L] = &Z80::BIT_4_L;
+  CBOp[CB_OpCodes::BIT_4_iHL] = &Z80::BIT_4_iHL;
+  CBOp[CB_OpCodes::BIT_4_A] = &Z80::BIT_4_A;
+  CBOp[CB_OpCodes::BIT_5_B] = &Z80::BIT_5_B;
+  CBOp[CB_OpCodes::BIT_5_C] = &Z80::BIT_5_C;
+  CBOp[CB_OpCodes::BIT_5_D] = &Z80::BIT_5_D;
+  CBOp[CB_OpCodes::BIT_5_E] = &Z80::BIT_5_E;
+  CBOp[CB_OpCodes::BIT_5_H] = &Z80::BIT_5_H;
+  CBOp[CB_OpCodes::BIT_5_L] = &Z80::BIT_5_L;
+  CBOp[CB_OpCodes::BIT_5_iHL] = &Z80::BIT_5_iHL;
+  CBOp[CB_OpCodes::BIT_5_A] = &Z80::BIT_5_A;
+  CBOp[CB_OpCodes::BIT_6_B] = &Z80::BIT_6_B;
+  CBOp[CB_OpCodes::BIT_6_C] = &Z80::BIT_6_C;
+  CBOp[CB_OpCodes::BIT_6_D] = &Z80::BIT_6_D;
+  CBOp[CB_OpCodes::BIT_6_E] = &Z80::BIT_6_E;
+  CBOp[CB_OpCodes::BIT_6_H] = &Z80::BIT_6_H;
+  CBOp[CB_OpCodes::BIT_6_L] = &Z80::BIT_6_L;
+  CBOp[CB_OpCodes::BIT_6_iHL] = &Z80::BIT_6_iHL;
+  CBOp[CB_OpCodes::BIT_6_A] = &Z80::BIT_6_A;
+  CBOp[CB_OpCodes::BIT_7_B] = &Z80::BIT_7_B;
+  CBOp[CB_OpCodes::BIT_7_C] = &Z80::BIT_7_C;
+  CBOp[CB_OpCodes::BIT_7_D] = &Z80::BIT_7_D;
+  CBOp[CB_OpCodes::BIT_7_E] = &Z80::BIT_7_E;
+  CBOp[CB_OpCodes::BIT_7_H] = &Z80::BIT_7_H;
+  CBOp[CB_OpCodes::BIT_7_L] = &Z80::BIT_7_L;
+  CBOp[CB_OpCodes::BIT_7_iHL] = &Z80::BIT_7_iHL;
+  CBOp[CB_OpCodes::BIT_7_A] = &Z80::BIT_7_A;
+  CBOp[CB_OpCodes::RES_0_B] = &Z80::RES_0_B;
+  CBOp[CB_OpCodes::RES_0_C] = &Z80::RES_0_C;
+  CBOp[CB_OpCodes::RES_0_D] = &Z80::RES_0_D;
+  CBOp[CB_OpCodes::RES_0_E] = &Z80::RES_0_E;
+  CBOp[CB_OpCodes::RES_0_H] = &Z80::RES_0_H;
+  CBOp[CB_OpCodes::RES_0_L] = &Z80::RES_0_L;
+  CBOp[CB_OpCodes::RES_0_iHL] = &Z80::RES_0_iHL;
+  CBOp[CB_OpCodes::RES_0_A] = &Z80::RES_0_A;
+  CBOp[CB_OpCodes::RES_1_B] = &Z80::RES_1_B;
+  CBOp[CB_OpCodes::RES_1_C] = &Z80::RES_1_C;
+  CBOp[CB_OpCodes::RES_1_D] = &Z80::RES_1_D;
+  CBOp[CB_OpCodes::RES_1_E] = &Z80::RES_1_E;
+  CBOp[CB_OpCodes::RES_1_H] = &Z80::RES_1_H;
+  CBOp[CB_OpCodes::RES_1_L] = &Z80::RES_1_L;
+  CBOp[CB_OpCodes::RES_1_iHL] = &Z80::RES_1_iHL;
+  CBOp[CB_OpCodes::RES_1_A] = &Z80::RES_1_A;
+  CBOp[CB_OpCodes::RES_2_B] = &Z80::RES_2_B;
+  CBOp[CB_OpCodes::RES_2_C] = &Z80::RES_2_C;
+  CBOp[CB_OpCodes::RES_2_D] = &Z80::RES_2_D;
+  CBOp[CB_OpCodes::RES_2_E] = &Z80::RES_2_E;
+  CBOp[CB_OpCodes::RES_2_H] = &Z80::RES_2_H;
+  CBOp[CB_OpCodes::RES_2_L] = &Z80::RES_2_L;
+  CBOp[CB_OpCodes::RES_2_iHL] = &Z80::RES_2_iHL;
+  CBOp[CB_OpCodes::RES_2_A] = &Z80::RES_2_A;
+  CBOp[CB_OpCodes::RES_3_B] = &Z80::RES_3_B;
+  CBOp[CB_OpCodes::RES_3_C] = &Z80::RES_3_C;
+  CBOp[CB_OpCodes::RES_3_D] = &Z80::RES_3_D;
+  CBOp[CB_OpCodes::RES_3_E] = &Z80::RES_3_E;
+  CBOp[CB_OpCodes::RES_3_H] = &Z80::RES_3_H;
+  CBOp[CB_OpCodes::RES_3_L] = &Z80::RES_3_L;
+  CBOp[CB_OpCodes::RES_3_iHL] = &Z80::RES_3_iHL;
+  CBOp[CB_OpCodes::RES_3_A] = &Z80::RES_3_A;
+  CBOp[CB_OpCodes::RES_4_B] = &Z80::RES_4_B;
+  CBOp[CB_OpCodes::RES_4_C] = &Z80::RES_4_C;
+  CBOp[CB_OpCodes::RES_4_D] = &Z80::RES_4_D;
+  CBOp[CB_OpCodes::RES_4_E] = &Z80::RES_4_E;
+  CBOp[CB_OpCodes::RES_4_H] = &Z80::RES_4_H;
+  CBOp[CB_OpCodes::RES_4_L] = &Z80::RES_4_L;
+  CBOp[CB_OpCodes::RES_4_iHL] = &Z80::RES_4_iHL;
+  CBOp[CB_OpCodes::RES_4_A] = &Z80::RES_4_A;
+  CBOp[CB_OpCodes::RES_5_B] = &Z80::RES_5_B;
+  CBOp[CB_OpCodes::RES_5_C] = &Z80::RES_5_C;
+  CBOp[CB_OpCodes::RES_5_D] = &Z80::RES_5_D;
+  CBOp[CB_OpCodes::RES_5_E] = &Z80::RES_5_E;
+  CBOp[CB_OpCodes::RES_5_H] = &Z80::RES_5_H;
+  CBOp[CB_OpCodes::RES_5_L] = &Z80::RES_5_L;
+  CBOp[CB_OpCodes::RES_5_iHL] = &Z80::RES_5_iHL;
+  CBOp[CB_OpCodes::RES_5_A] = &Z80::RES_5_A;
+  CBOp[CB_OpCodes::RES_6_B] = &Z80::RES_6_B;
+  CBOp[CB_OpCodes::RES_6_C] = &Z80::RES_6_C;
+  CBOp[CB_OpCodes::RES_6_D] = &Z80::RES_6_D;
+  CBOp[CB_OpCodes::RES_6_E] = &Z80::RES_6_E;
+  CBOp[CB_OpCodes::RES_6_H] = &Z80::RES_6_H;
+  CBOp[CB_OpCodes::RES_6_L] = &Z80::RES_6_L;
+  CBOp[CB_OpCodes::RES_6_iHL] = &Z80::RES_6_iHL;
+  CBOp[CB_OpCodes::RES_6_A] = &Z80::RES_6_A;
+  CBOp[CB_OpCodes::RES_7_B] = &Z80::RES_7_B;
+  CBOp[CB_OpCodes::RES_7_C] = &Z80::RES_7_C;
+  CBOp[CB_OpCodes::RES_7_D] = &Z80::RES_7_D;
+  CBOp[CB_OpCodes::RES_7_E] = &Z80::RES_7_E;
+  CBOp[CB_OpCodes::RES_7_H] = &Z80::RES_7_H;
+  CBOp[CB_OpCodes::RES_7_L] = &Z80::RES_7_L;
+  CBOp[CB_OpCodes::RES_7_iHL] = &Z80::RES_7_iHL;
+  CBOp[CB_OpCodes::RES_7_A] = &Z80::RES_7_A;
+  CBOp[CB_OpCodes::SET_0_B] = &Z80::SET_0_B;
+  CBOp[CB_OpCodes::SET_0_C] = &Z80::SET_0_C;
+  CBOp[CB_OpCodes::SET_0_D] = &Z80::SET_0_D;
+  CBOp[CB_OpCodes::SET_0_E] = &Z80::SET_0_E;
+  CBOp[CB_OpCodes::SET_0_H] = &Z80::SET_0_H;
+  CBOp[CB_OpCodes::SET_0_L] = &Z80::SET_0_L;
+  CBOp[CB_OpCodes::SET_0_iHL] = &Z80::SET_0_iHL;
+  CBOp[CB_OpCodes::SET_0_A] = &Z80::SET_0_A;
+  CBOp[CB_OpCodes::SET_1_B] = &Z80::SET_1_B;
+  CBOp[CB_OpCodes::SET_1_C] = &Z80::SET_1_C;
+  CBOp[CB_OpCodes::SET_1_D] = &Z80::SET_1_D;
+  CBOp[CB_OpCodes::SET_1_E] = &Z80::SET_1_E;
+  CBOp[CB_OpCodes::SET_1_H] = &Z80::SET_1_H;
+  CBOp[CB_OpCodes::SET_1_L] = &Z80::SET_1_L;
+  CBOp[CB_OpCodes::SET_1_iHL] = &Z80::SET_1_iHL;
+  CBOp[CB_OpCodes::SET_1_A] = &Z80::SET_1_A;
+  CBOp[CB_OpCodes::SET_2_B] = &Z80::SET_2_B;
+  CBOp[CB_OpCodes::SET_2_C] = &Z80::SET_2_C;
+  CBOp[CB_OpCodes::SET_2_D] = &Z80::SET_2_D;
+  CBOp[CB_OpCodes::SET_2_E] = &Z80::SET_2_E;
+  CBOp[CB_OpCodes::SET_2_H] = &Z80::SET_2_H;
+  CBOp[CB_OpCodes::SET_2_L] = &Z80::SET_2_L;
+  CBOp[CB_OpCodes::SET_2_iHL] = &Z80::SET_2_iHL;
+  CBOp[CB_OpCodes::SET_2_A] = &Z80::SET_2_A;
+  CBOp[CB_OpCodes::SET_3_B] = &Z80::SET_3_B;
+  CBOp[CB_OpCodes::SET_3_C] = &Z80::SET_3_C;
+  CBOp[CB_OpCodes::SET_3_D] = &Z80::SET_3_D;
+  CBOp[CB_OpCodes::SET_3_E] = &Z80::SET_3_E;
+  CBOp[CB_OpCodes::SET_3_H] = &Z80::SET_3_H;
+  CBOp[CB_OpCodes::SET_3_L] = &Z80::SET_3_L;
+  CBOp[CB_OpCodes::SET_3_iHL] = &Z80::SET_3_iHL;
+  CBOp[CB_OpCodes::SET_3_A] = &Z80::SET_3_A;
+  CBOp[CB_OpCodes::SET_4_B] = &Z80::SET_4_B;
+  CBOp[CB_OpCodes::SET_4_C] = &Z80::SET_4_C;
+  CBOp[CB_OpCodes::SET_4_D] = &Z80::SET_4_D;
+  CBOp[CB_OpCodes::SET_4_E] = &Z80::SET_4_E;
+  CBOp[CB_OpCodes::SET_4_H] = &Z80::SET_4_H;
+  CBOp[CB_OpCodes::SET_4_L] = &Z80::SET_4_L;
+  CBOp[CB_OpCodes::SET_4_iHL] = &Z80::SET_4_iHL;
+  CBOp[CB_OpCodes::SET_4_A] = &Z80::SET_4_A;
+  CBOp[CB_OpCodes::SET_5_B] = &Z80::SET_5_B;
+  CBOp[CB_OpCodes::SET_5_C] = &Z80::SET_5_C;
+  CBOp[CB_OpCodes::SET_5_D] = &Z80::SET_5_D;
+  CBOp[CB_OpCodes::SET_5_E] = &Z80::SET_5_E;
+  CBOp[CB_OpCodes::SET_5_H] = &Z80::SET_5_H;
+  CBOp[CB_OpCodes::SET_5_L] = &Z80::SET_5_L;
+  CBOp[CB_OpCodes::SET_5_iHL] = &Z80::SET_5_iHL;
+  CBOp[CB_OpCodes::SET_5_A] = &Z80::SET_5_A;
+  CBOp[CB_OpCodes::SET_6_B] = &Z80::SET_6_B;
+  CBOp[CB_OpCodes::SET_6_C] = &Z80::SET_6_C;
+  CBOp[CB_OpCodes::SET_6_D] = &Z80::SET_6_D;
+  CBOp[CB_OpCodes::SET_6_E] = &Z80::SET_6_E;
+  CBOp[CB_OpCodes::SET_6_H] = &Z80::SET_6_H;
+  CBOp[CB_OpCodes::SET_6_L] = &Z80::SET_6_L;
+  CBOp[CB_OpCodes::SET_6_iHL] = &Z80::SET_6_iHL;
+  CBOp[CB_OpCodes::SET_6_A] = &Z80::SET_6_A;
+  CBOp[CB_OpCodes::SET_7_B] = &Z80::SET_7_B;
+  CBOp[CB_OpCodes::SET_7_C] = &Z80::SET_7_C;
+  CBOp[CB_OpCodes::SET_7_D] = &Z80::SET_7_D;
+  CBOp[CB_OpCodes::SET_7_E] = &Z80::SET_7_E;
+  CBOp[CB_OpCodes::SET_7_H] = &Z80::SET_7_H;
+  CBOp[CB_OpCodes::SET_7_L] = &Z80::SET_7_L;
+  CBOp[CB_OpCodes::SET_7_iHL] = &Z80::SET_7_iHL;
+  CBOp[CB_OpCodes::SET_7_A] = &Z80::SET_7_A;
+
   memset(flagTable, 0x00, 256);
   flagTable[0] |= ZERO_BIT;
   for(uint16_t i = 0; i < 256; i++)
@@ -303,6 +561,7 @@ Z80::Z80(MemoryInterface *memoryInterface, IOInterface *ioInterface)
 Z80::~Z80(void)
 {
   delete[] flagTable;
+  delete[] CBOp;
   delete[] Op;  
 }
 
@@ -383,9 +642,8 @@ void Z80::RLCA(void)
 {
   TRACE("RLCA");
   mainRegisters.af.f &= ~(CARRY_BIT | HALF_CARRY_BIT | SUBTRACT_BIT);
-  mainRegisters.af.f |= (mainRegisters.af.a & 0x80) >> 7;
-  mainRegisters.af.a <<= 1;
-  mainRegisters.af.a |= mainRegisters.af.f & CARRY_BIT;
+  mainRegisters.af.a = (mainRegisters.af.a << 1) | (mainRegisters.af.a >> 7);
+  mainRegisters.af.f |= mainRegisters.af.a & CARRY_BIT;
 }
 
 void Z80::EX_AF_AF(void)
@@ -449,7 +707,11 @@ void Z80::LD_C_byte(void)
 	mainRegisters.bc.c = memory->ReadByte(PC++);
 }
 
-void Z80::RRCA(void){}
+void Z80::RRCA(void)
+{
+  
+}
+
 void Z80::DJNZ(void){}
 
 void Z80::LD_DE_word(void)
@@ -1628,7 +1890,13 @@ void Z80::JP_Z_word(void)
 	}
 }
 
-void Z80::CB(void){}
+void Z80::CB(void)
+{
+  TRACE("CB");
+  uint8_t instruction = memory->ReadByte(PC++);
+  (this->*CBOp[instruction])();
+}
+
 void Z80::CALL_Z_word(void){}
 void Z80::CALL_word(void){}
 void Z80::ADC_A_byte(void){}
@@ -1944,3 +2212,260 @@ void Z80::RST_38(void)
   memory->WriteByte(--indexRegisters.sp, PC & 0xFF);
   PC = 0x0038;
 }
+
+void Z80::RLC_B(void){}
+void Z80::RLC_C(void){}
+void Z80::RLC_D(void){}
+void Z80::RLC_E(void){}
+void Z80::RLC_H(void){}
+void Z80::RLC_L(void){}
+void Z80::RLC_iHL(void){}
+void Z80::RLC_A(void){}
+void Z80::RRC_B(void){}
+void Z80::RRC_C(void){}
+void Z80::RRC_D(void){}
+void Z80::RRC_E(void){}
+void Z80::RRC_H(void){}
+void Z80::RRC_L(void){}
+void Z80::RRC_iHL(void){}
+void Z80::RRC_A(void){}
+void Z80::RL_B(void){}
+void Z80::RL_C(void){}
+void Z80::RL_D(void){}
+void Z80::RL_E(void){}
+void Z80::RL_H(void){}
+void Z80::RL_L(void){}
+void Z80::RL_iHL(void){}
+void Z80::RL_A(void){}
+void Z80::RR_B(void){}
+void Z80::RR_C(void){}
+void Z80::RR_D(void){}
+void Z80::RR_E(void){}
+void Z80::RR_H(void){}
+void Z80::RR_L(void){}
+void Z80::RR_iHL(void){}
+void Z80::RR_A(void){}
+void Z80::SLA_B(void){}
+void Z80::SLA_C(void){}
+void Z80::SLA_D(void){}
+void Z80::SLA_E(void){}
+void Z80::SLA_H(void){}
+void Z80::SLA_L(void){}
+void Z80::SLA_iHL(void){}
+void Z80::SLA_A(void){}
+void Z80::SRA_B(void){}
+void Z80::SRA_C(void){}
+void Z80::SRA_D(void){}
+void Z80::SRA_E(void){}
+void Z80::SRA_H(void){}
+void Z80::SRA_L(void){}
+void Z80::SRA_iHL(void){}
+void Z80::SRA_A(void){}
+void Z80::SLS_B(void){}
+void Z80::SLS_C(void){}
+void Z80::SLS_D(void){}
+void Z80::SLS_E(void){}
+void Z80::SLS_H(void){}
+void Z80::SLS_L(void){}
+void Z80::SLS_iHL(void){}
+void Z80::SLS_A(void){}
+void Z80::SRL_B(void){}
+void Z80::SRL_C(void){}
+void Z80::SRL_D(void){}
+void Z80::SRL_E(void){}
+void Z80::SRL_H(void){}
+void Z80::SRL_L(void){}
+void Z80::SRL_iHL(void){}
+void Z80::SRL_A(void){}
+void Z80::BIT_0_B(void){}
+void Z80::BIT_0_C(void){}
+void Z80::BIT_0_D(void){}
+void Z80::BIT_0_E(void){}
+void Z80::BIT_0_H(void){}
+void Z80::BIT_0_L(void){}
+void Z80::BIT_0_iHL(void){}
+void Z80::BIT_0_A(void){}
+void Z80::BIT_1_B(void){}
+void Z80::BIT_1_C(void){}
+void Z80::BIT_1_D(void){}
+void Z80::BIT_1_E(void){}
+void Z80::BIT_1_H(void){}
+void Z80::BIT_1_L(void){}
+void Z80::BIT_1_iHL(void){}
+void Z80::BIT_1_A(void){}
+void Z80::BIT_2_B(void){}
+void Z80::BIT_2_C(void){}
+void Z80::BIT_2_D(void){}
+void Z80::BIT_2_E(void){}
+void Z80::BIT_2_H(void){}
+void Z80::BIT_2_L(void){}
+void Z80::BIT_2_iHL(void){}
+void Z80::BIT_2_A(void){}
+void Z80::BIT_3_B(void){}
+void Z80::BIT_3_C(void){}
+void Z80::BIT_3_D(void){}
+void Z80::BIT_3_E(void){}
+void Z80::BIT_3_H(void){}
+void Z80::BIT_3_L(void){}
+void Z80::BIT_3_iHL(void){}
+void Z80::BIT_3_A(void){}
+void Z80::BIT_4_B(void){}
+void Z80::BIT_4_C(void){}
+void Z80::BIT_4_D(void){}
+void Z80::BIT_4_E(void){}
+void Z80::BIT_4_H(void){}
+void Z80::BIT_4_L(void){}
+void Z80::BIT_4_iHL(void){}
+void Z80::BIT_4_A(void){}
+void Z80::BIT_5_B(void){}
+void Z80::BIT_5_C(void){}
+void Z80::BIT_5_D(void){}
+void Z80::BIT_5_E(void){}
+void Z80::BIT_5_H(void){}
+void Z80::BIT_5_L(void){}
+void Z80::BIT_5_iHL(void){}
+void Z80::BIT_5_A(void){}
+void Z80::BIT_6_B(void){}
+void Z80::BIT_6_C(void){}
+void Z80::BIT_6_D(void){}
+void Z80::BIT_6_E(void){}
+void Z80::BIT_6_H(void){}
+void Z80::BIT_6_L(void){}
+void Z80::BIT_6_iHL(void){}
+void Z80::BIT_6_A(void){}
+void Z80::BIT_7_B(void){}
+void Z80::BIT_7_C(void){}
+void Z80::BIT_7_D(void){}
+void Z80::BIT_7_E(void){}
+void Z80::BIT_7_H(void){}
+void Z80::BIT_7_L(void){}
+void Z80::BIT_7_iHL(void){}
+void Z80::BIT_7_A(void){}
+void Z80::RES_0_B(void){}
+void Z80::RES_0_C(void){}
+void Z80::RES_0_D(void){}
+void Z80::RES_0_E(void){}
+void Z80::RES_0_H(void){}
+void Z80::RES_0_L(void){}
+void Z80::RES_0_iHL(void){}
+void Z80::RES_0_A(void){}
+void Z80::RES_1_B(void){}
+void Z80::RES_1_C(void){}
+void Z80::RES_1_D(void){}
+void Z80::RES_1_E(void){}
+void Z80::RES_1_H(void){}
+void Z80::RES_1_L(void){}
+void Z80::RES_1_iHL(void){}
+void Z80::RES_1_A(void){}
+void Z80::RES_2_B(void){}
+void Z80::RES_2_C(void){}
+void Z80::RES_2_D(void){}
+void Z80::RES_2_E(void){}
+void Z80::RES_2_H(void){}
+void Z80::RES_2_L(void){}
+void Z80::RES_2_iHL(void){}
+void Z80::RES_2_A(void){}
+void Z80::RES_3_B(void){}
+void Z80::RES_3_C(void){}
+void Z80::RES_3_D(void){}
+void Z80::RES_3_E(void){}
+void Z80::RES_3_H(void){}
+void Z80::RES_3_L(void){}
+void Z80::RES_3_iHL(void){}
+void Z80::RES_3_A(void){}
+void Z80::RES_4_B(void){}
+void Z80::RES_4_C(void){}
+void Z80::RES_4_D(void){}
+void Z80::RES_4_E(void){}
+void Z80::RES_4_H(void){}
+void Z80::RES_4_L(void){}
+void Z80::RES_4_iHL(void){}
+void Z80::RES_4_A(void){}
+void Z80::RES_5_B(void){}
+void Z80::RES_5_C(void){}
+void Z80::RES_5_D(void){}
+void Z80::RES_5_E(void){}
+void Z80::RES_5_H(void){}
+void Z80::RES_5_L(void){}
+void Z80::RES_5_iHL(void){}
+void Z80::RES_5_A(void){}
+void Z80::RES_6_B(void){}
+void Z80::RES_6_C(void){}
+void Z80::RES_6_D(void){}
+void Z80::RES_6_E(void){}
+void Z80::RES_6_H(void){}
+void Z80::RES_6_L(void){}
+void Z80::RES_6_iHL(void){}
+void Z80::RES_6_A(void){}
+void Z80::RES_7_B(void){}
+void Z80::RES_7_C(void){}
+void Z80::RES_7_D(void){}
+void Z80::RES_7_E(void){}
+void Z80::RES_7_H(void){}
+void Z80::RES_7_L(void){}
+void Z80::RES_7_iHL(void){}
+void Z80::RES_7_A(void){}
+void Z80::SET_0_B(void){}
+void Z80::SET_0_C(void){}
+void Z80::SET_0_D(void){}
+void Z80::SET_0_E(void){}
+void Z80::SET_0_H(void){}
+void Z80::SET_0_L(void){}
+void Z80::SET_0_iHL(void){}
+void Z80::SET_0_A(void){}
+void Z80::SET_1_B(void){}
+void Z80::SET_1_C(void){}
+void Z80::SET_1_D(void){}
+void Z80::SET_1_E(void){}
+void Z80::SET_1_H(void){}
+void Z80::SET_1_L(void){}
+void Z80::SET_1_iHL(void){}
+void Z80::SET_1_A(void){}
+void Z80::SET_2_B(void){}
+void Z80::SET_2_C(void){}
+void Z80::SET_2_D(void){}
+void Z80::SET_2_E(void){}
+void Z80::SET_2_H(void){}
+void Z80::SET_2_L(void){}
+void Z80::SET_2_iHL(void){}
+void Z80::SET_2_A(void){}
+void Z80::SET_3_B(void){}
+void Z80::SET_3_C(void){}
+void Z80::SET_3_D(void){}
+void Z80::SET_3_E(void){}
+void Z80::SET_3_H(void){}
+void Z80::SET_3_L(void){}
+void Z80::SET_3_iHL(void){}
+void Z80::SET_3_A(void){}
+void Z80::SET_4_B(void){}
+void Z80::SET_4_C(void){}
+void Z80::SET_4_D(void){}
+void Z80::SET_4_E(void){}
+void Z80::SET_4_H(void){}
+void Z80::SET_4_L(void){}
+void Z80::SET_4_iHL(void){}
+void Z80::SET_4_A(void){}
+void Z80::SET_5_B(void){}
+void Z80::SET_5_C(void){}
+void Z80::SET_5_D(void){}
+void Z80::SET_5_E(void){}
+void Z80::SET_5_H(void){}
+void Z80::SET_5_L(void){}
+void Z80::SET_5_iHL(void){}
+void Z80::SET_5_A(void){}
+void Z80::SET_6_B(void){}
+void Z80::SET_6_C(void){}
+void Z80::SET_6_D(void){}
+void Z80::SET_6_E(void){}
+void Z80::SET_6_H(void){}
+void Z80::SET_6_L(void){}
+void Z80::SET_6_iHL(void){}
+void Z80::SET_6_A(void){}
+void Z80::SET_7_B(void){}
+void Z80::SET_7_C(void){}
+void Z80::SET_7_D(void){}
+void Z80::SET_7_E(void){}
+void Z80::SET_7_H(void){}
+void Z80::SET_7_L(void){}
+void Z80::SET_7_iHL(void){}
+void Z80::SET_7_A(void){}
