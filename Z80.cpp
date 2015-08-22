@@ -2349,14 +2349,64 @@ void Z80::SRL_H(void){}
 void Z80::SRL_L(void){}
 void Z80::SRL_iHL(void){}
 void Z80::SRL_A(void){}
-void Z80::BIT_0_B(void){}
-void Z80::BIT_0_C(void){}
-void Z80::BIT_0_D(void){}
-void Z80::BIT_0_E(void){}
-void Z80::BIT_0_H(void){}
-void Z80::BIT_0_L(void){}
-void Z80::BIT_0_iHL(void){}
-void Z80::BIT_0_A(void){}
+
+void Z80::BIT_0_B(void)
+{
+  TRACE("BIT_0_B");
+  mainRegisters.af.f &= ~(ZERO_BIT | SUBTRACT_BIT);
+  mainRegisters.af.f |= (HALF_CARRY_BIT | ((mainRegisters.bc.b & 0x01) << 6));
+}
+
+void Z80::BIT_0_C(void)
+{
+  TRACE("BIT_0_C");
+  mainRegisters.af.f &= ~(ZERO_BIT | SUBTRACT_BIT);
+  mainRegisters.af.f |= (HALF_CARRY_BIT | ((mainRegisters.bc.c & 0x01) << 6));
+}
+
+void Z80::BIT_0_D(void)
+{
+  TRACE("BIT_0_D");
+  mainRegisters.af.f &= ~(ZERO_BIT | SUBTRACT_BIT);
+  mainRegisters.af.f |= (HALF_CARRY_BIT | ((mainRegisters.de.d & 0x01) << 6));
+}
+
+void Z80::BIT_0_E(void)
+{
+  TRACE("BIT_0_E");
+  mainRegisters.af.f &= ~(ZERO_BIT | SUBTRACT_BIT);
+  mainRegisters.af.f |= (HALF_CARRY_BIT | ((mainRegisters.de.e & 0x01) << 6));
+}
+
+void Z80::BIT_0_H(void)
+{
+  TRACE("BIT_0_H");
+  mainRegisters.af.f &= ~(ZERO_BIT | SUBTRACT_BIT);
+  mainRegisters.af.f |= (HALF_CARRY_BIT | ((mainRegisters.hl.h & 0x01) << 6));
+}
+
+void Z80::BIT_0_L(void)
+{
+  TRACE("BIT_0_L");
+  mainRegisters.af.f &= ~(ZERO_BIT | SUBTRACT_BIT);
+  mainRegisters.af.f |= (HALF_CARRY_BIT | ((mainRegisters.hl.l & 0x01) << 6));
+}
+
+void Z80::BIT_0_iHL(void)
+{
+  TRACE("BIT_0_iHL");
+  uint8_t value = memory->ReadByte(mainRegisters.hl.hl);
+  mainRegisters.af.f &= ~(ZERO_BIT | SUBTRACT_BIT);
+  mainRegisters.af.f |= (HALF_CARRY_BIT | ((value & 0x01) << 6));
+}
+
+void Z80::BIT_0_A(void)
+{
+  TRACE("BIT_0_A");
+  mainRegisters.af.f &= ~(ZERO_BIT | SUBTRACT_BIT);
+  mainRegisters.af.f |= (HALF_CARRY_BIT | ((mainRegisters.af.a & 0x01) << 6));
+}
+
 void Z80::BIT_1_B(void){}
 void Z80::BIT_1_C(void){}
 void Z80::BIT_1_D(void){}
