@@ -2341,14 +2341,72 @@ void Z80::SLS_H(void){}
 void Z80::SLS_L(void){}
 void Z80::SLS_iHL(void){}
 void Z80::SLS_A(void){}
-void Z80::SRL_B(void){}
-void Z80::SRL_C(void){}
-void Z80::SRL_D(void){}
-void Z80::SRL_E(void){}
-void Z80::SRL_H(void){}
-void Z80::SRL_L(void){}
-void Z80::SRL_iHL(void){}
-void Z80::SRL_A(void){}
+
+void Z80::SRL_B(void)
+{
+  TRACE("SRL_B");
+  mainRegisters.af.f = (mainRegisters.bc.b & 0x01);
+  mainRegisters.bc.b >>= 1;
+  mainRegisters.af.f |= flagTable[mainRegisters.bc.b];
+}
+
+void Z80::SRL_C(void)
+{
+  TRACE("SRL_C");
+  mainRegisters.af.f = (mainRegisters.bc.c & 0x01);
+  mainRegisters.bc.c >>= 1;
+  mainRegisters.af.f |= flagTable[mainRegisters.bc.c];
+}
+
+void Z80::SRL_D(void)
+{
+  TRACE("SRL_D");
+  mainRegisters.af.f = (mainRegisters.de.d & 0x01);
+  mainRegisters.de.d >>= 1;
+  mainRegisters.af.f |= flagTable[mainRegisters.de.d];
+}
+
+void Z80::SRL_E(void)
+{
+  TRACE("SRL_E");
+  mainRegisters.af.f = (mainRegisters.de.e & 0x01);
+  mainRegisters.de.e >>= 1;
+  mainRegisters.af.f |= flagTable[mainRegisters.de.e];
+}
+
+void Z80::SRL_H(void)
+{
+  TRACE("SRL_H");
+  mainRegisters.af.f = (mainRegisters.hl.h & 0x01);
+  mainRegisters.hl.h >>= 1;
+  mainRegisters.af.f |= flagTable[mainRegisters.hl.h];
+}
+
+void Z80::SRL_L(void)
+{
+  TRACE("SRL_L");
+  mainRegisters.af.f = (mainRegisters.hl.l & 0x01);
+  mainRegisters.hl.l >>= 1;
+  mainRegisters.af.f |= flagTable[mainRegisters.hl.l];
+}
+
+void Z80::SRL_iHL(void)
+{
+  TRACE("SRL_H");
+  uint8_t value = memory->ReadByte(mainRegisters.hl.hl);
+  mainRegisters.af.f = (value & 0x01);
+  value >>= 1;
+  mainRegisters.af.f |= flagTable[value];
+  memory->WriteByte(mainRegisters.hl.hl, value);
+}
+
+void Z80::SRL_A(void)
+{
+  TRACE("SRL_A");
+  mainRegisters.af.f = (mainRegisters.af.a & 0x01);
+  mainRegisters.af.a >>= 1;
+  mainRegisters.af.f |= flagTable[mainRegisters.af.a];
+}
 
 void Z80::BIT_0_B(void)
 {
